@@ -2,9 +2,10 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
-from PIL import Image
+from PIL import Image, ImageTk
 import os
 import mysql.connector
+
 
 MAX_RESOLUTION = 1080
 
@@ -39,6 +40,15 @@ c= connection.cursor()
 #         messagebox.showinfo(f"Registration success.")
 #     else:
 #         messagebox.showerror("Error", "Please upload an image before saving.")
+
+def select_front_img():
+    filename = filedialog.askopenfilename(initialdir="/front_view", title="select image", 
+                                          filetypes=(("png images","*.png"), ("jpg images", "*.jpg"), ("jpeg images", "*.jpeg")))
+    front_img = Image.open(filename)
+    front_img = front_img.resize((100, 100), Image.ANTIALIAS)
+    front_img = ImageTk.PhotoImage(front_img)
+    show_front_label.config(image=front_img)
+    show_front_label.image = front_img
 
 def submit_form():
     name = name_entry.get().strip()
@@ -143,11 +153,20 @@ asterisk_label.grid(row=0, column=0)
 text_label = tk.Label(crime_label, text="Crime Committed:", font=('Courier New', 18, 'bold'), bg="#237de1", fg="orange")
 text_label.grid(row=0, column=1)
 
-crime_entry = tk.Text(frame, width=32, height=4, font=('Courier New', 16))
+crime_entry = tk.Text(frame, width=32, height=1, font=('Courier New', 16))
 crime_entry.grid(row=6, column=1, padx=10, pady=10)
+
+#images
 
 # browse_btn = tk.Button(root, text="Upload Image", font=('Courier New', 16), command=browse_image)
 # browse_btn.pack(pady=20)
+
+
+front_btn = tk.Button(frame, text='Upload Front image', font=('Courier New', 12), bg='white', command=select_front_img)
+front_btn.grid(row=7, column=0, padx=10, pady=10, sticky="e")
+show_front_label = tk.Label(frame, bg='#237de1')
+show_front_label.grid(row=8, column=0)
+
 
 #confirm button 
 confirm_btn = tk.Button(root, text="Confirm", font=('Courier New', 16, 'bold'), command=submit_form, bg="#feac57")

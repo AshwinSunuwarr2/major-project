@@ -1,0 +1,8 @@
+fastapi
+pydantic
+sqlalchemy
+pymysql
+uvicorn
+tkinter
+pillow
+opencv-python

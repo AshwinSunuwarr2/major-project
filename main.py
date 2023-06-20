@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.responses import JSONResponse
 from typing import Optional, List, Annotated
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -106,12 +107,12 @@ def add_criminals(c: CriminalSchema, db: Session=Depends(get_db)):
 #         raise HTTPException(status_code=404, detail="ID not found.")
     
 
-# @app.delete("/delete-criminal/{c_id}", response_class=JSONResponse)
-# def delete_criminal(c_id: int, db: Session=Depends(get_db)):
-#     try:
-#         c = db.query(Criminals).filter(c_id == Criminals.id).first()
-#         db.delete(c)
-#         db.commit()
-#         return f"Criminal of id {c_id} has been deleted."
-#     except:
-#         raise HTTPException(status_code=404, detail="ID not found.")
+@app.delete("/delete-criminal/{c_id}", response_class=JSONResponse)
+def delete_criminal(c_id: int, db: Session=Depends(get_db)):
+    try:
+        c = db.query(Criminals).filter(c_id == Criminals.id).first()
+        db.delete(c)
+        db.commit()
+        return f"Criminal of id {c_id} has been deleted."
+    except:
+        raise HTTPException(status_code=404, detail="ID not found.")
