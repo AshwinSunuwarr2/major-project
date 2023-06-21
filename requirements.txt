@@ -6,3 +6,4 @@ uvicorn
 tkinter
 pillow
 opencv-python
+mysql-connector-python
