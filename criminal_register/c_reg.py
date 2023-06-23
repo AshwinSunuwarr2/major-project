@@ -100,8 +100,8 @@ def submit_form():
 
     data_insert = "INSERT INTO `criminal_reg`(`name`, `father_name`, `mother_name`, `age`, `gender`, `nationality`, `crime`, `front_img`, `left_img`, `right_img`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     vals = (name, father_name, mother_name, age, gender, nationality, crime, image_data[0], image_data[1], image_data[2])
-    c.execute(data_insert, vals)
-    connection.commit()
+    # c.execute(data_insert, vals)
+    # connection.commit()
     
     
     # if len(image_data[0]) % 2 != 0:
@@ -111,6 +111,15 @@ def submit_form():
 
     # with open('image.png', 'wb') as file:
     #     file.write(binary_data)
+
+        
+    try:
+        c.execute(data_insert, vals)
+        connection.commit()
+        messagebox.showinfo("Success", f"Criminal with name: {name} is now registered.")
+
+    except mysql.connector.Error as error:
+        messagebox.showerror("Database Error", str(error))
 
     name_entry.delete(0, tk.END)
     father_entry.delete(0, tk.END)
@@ -123,19 +132,11 @@ def submit_form():
     left_image_label.configure(image=None)      
     right_image_label.configure(image=None)
     front_image_label.image = None  # Clear reference to front image
-    left_image_label.image = None  # Clear reference to left image
-    right_image_label.image = None  # Clear reference to right image
+    left_image_label.image = None  # Clear ref
+    right_image_label.image = None  # Clear ref
     front_file.set("")
     left_file.set("")
     right_file.set("")
-        
-    try:
-        c.execute(data_insert, vals)
-        connection.commit()
-        messagebox.showinfo("Success", f"Criminal with name: {name} is now registered.")
-
-    except mysql.connector.Error as error:
-        messagebox.showerror("Database Error", str(error))
 
 
 frame = tk.Frame(root, bg=my_color)
@@ -167,10 +168,23 @@ mother_entry = tk.Entry(frame, width=32, font=('Courier New', 16))
 mother_entry.grid(row=2, column=1, padx=10, pady=10)
 
 #age
-age_label = tk.Label(frame, fg='#383838', text="Age:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
+
+age_label = tk.Label(frame, bg="#b2bedc")
 age_label.grid(row=3, column=0, padx=10, pady=10, sticky="e")
+
+asterisk_label = tk.Label(age_label, text="*", font=('Courier New', 18, 'bold'), fg='red', bg="#b2bedc")
+asterisk_label.grid(row=0, column=0)
+
+text_label = tk.Label(age_label, text="Age:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+text_label.grid(row=0, column=1)
+
 age_entry = tk.Entry(frame, width=32, font=('Courier New', 16))
 age_entry.grid(row=3, column=1, padx=10, pady=10)
+
+# age_label = tk.Label(frame, fg='#383838', text="Age:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
+# age_label.grid(row=3, column=0, padx=10, pady=10, sticky="e")
+# age_entry = tk.Entry(frame, width=32, font=('Courier New', 16))
+# age_entry.grid(row=3, column=1, padx=10, pady=10)
 
 #gender
 gender_label = tk.Label(frame, bg="#b2bedc")
@@ -223,14 +237,14 @@ right_image_label = tk.Label(frame, bg="#b2bedc")
 right_image_label.grid(row=7, column=2, padx=10, pady=10)
 
 # image selection 
-browse_btn1 = tk.Button(frame, text="Select Front Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(front_image_label, front_file))
+browse_btn1 = tk.Button(frame, cursor="hand2", text="Select Front Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(front_image_label, front_file))
 browse_btn1.grid(row=8, column=0, padx=4, pady=4)
 
 
-browse_btn2 = tk.Button(frame, text="Select Left Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(left_image_label, left_file))
+browse_btn2 = tk.Button(frame, cursor="hand2", text="Select Left Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(left_image_label, left_file))
 browse_btn2.grid(row=8, column=1, padx=4, pady=4)
 
-browse_btn3 = tk.Button(frame, text="Select Right Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(right_image_label, right_file))
+browse_btn3 = tk.Button(frame, cursor="hand2", text="Select Right Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(right_image_label, right_file))
 browse_btn3.grid(row=8, column=2, padx=4, pady=4)
 
 # Apply hover effect
