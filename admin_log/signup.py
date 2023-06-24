@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import mysql.connector
 
-my_font = "Courier new"
-my_color = "#432771"
+signup_font = "Courier new"
+signup_color = "#432771"
 
 signup_w = tk.Tk()
 signup_w.title("Sign up")
@@ -27,9 +27,9 @@ def signup():
     passw = psw.get()
     c_passw = c_psw.get()
 
-    if name == '':
-        messagebox.showerror('Invalid', 'Username should be filled.')
-        return
+    if name ==  '' or passw == '' or c_passw == '':
+            messagebox.showerror('Invalid', 'You must fill all fields')
+            return
 
     if passw != c_passw:
         messagebox.showerror('Invalid', 'Both password should match.')
@@ -64,11 +64,11 @@ def nav_log():
 
 
 # signup_w contd
-my_font = my_font
+signup_font = signup_font
 frm = tk.Frame(signup_w, width=850, height=660, bg="white")
 frm.place(x=0, y=0)
 
-lbl_head = tk.Label(frm, text="Sign up", bg="white", fg=my_color, font=(my_font, 28, "bold"))
+lbl_head = tk.Label(frm, text="Sign up", bg="white", fg=signup_color, font=(signup_font, 28, "bold"))
 lbl_head.place(x=170, y=80)
 
 
@@ -81,7 +81,7 @@ def on_leave(e):
         user.insert(0, "Username")
 
 # username label
-user = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(my_font, 16))
+user = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
 user.place(x=170, y=158)
 user.insert(0, "Username")
 user.bind('<FocusIn>', on_enter)
@@ -98,7 +98,7 @@ def on_leave(e):
         psw.insert(0, "Password")
 
 # password label
-psw = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(my_font, 16))
+psw = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
 psw.place(x=170, y=225)
 psw.insert(0, "Password")
 psw.bind('<FocusIn>', on_enter)
@@ -115,7 +115,7 @@ def on_leave(e):
         c_psw.insert(0, "Confirm Password")
 
 # confirm password label
-c_psw = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(my_font, 16))
+c_psw = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
 c_psw.insert(0, "Confirm Password")
 c_psw.place(x=170, y=295)
 c_psw.bind('<FocusIn>', on_enter)
@@ -123,13 +123,13 @@ c_psw.bind('<FocusOut>', on_leave)
 
 tk.Frame(frm, width=350, height=2, bg="black").place(x=169, y=320)
 
-btn_signup = tk.Button(frm, text="SIGN UP", width=18, bg=my_color, cursor='hand2', fg="white", font=(my_font, 16, "bold"),relief="flat", border=0, command=signup)
+btn_signup = tk.Button(frm, text="SIGN UP", width=18, bg=signup_color, cursor='hand2', fg="white", font=(signup_font, 16, "bold"),relief="flat", border=0, command=signup)
 btn_signup.place(x=200, y=360)
 
 # sign up btn
-lbl_signup = tk.Label(frm, text="Already have an account?", bg="white", fg="black", font=(my_font, 12))
+lbl_signup = tk.Label(frm, text="Already have an account?", bg="white", fg="black", font=(signup_font, 12))
 lbl_signup.place(x=160, y=440)
-btn_log = tk.Button(frm, text="Sign in", border=0, cursor="hand2", font=(my_font, 12, "italic bold"), relief="flat", fg="#e13746", bg="white", command=nav_log)
+btn_log = tk.Button(frm, text="Sign in", border=0, cursor="hand2", font=(signup_font, 12, "italic bold"), relief="flat", fg="#e13746", bg="white", command=nav_log)
 btn_log.place(x=407, y=439)
 
 
