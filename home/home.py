@@ -525,7 +525,7 @@ def update():
 
 
 ##################3  help   #############################
-def info():
+def help():
     frm1 = tk.Frame(home, width = 1250, height = 850, bg="yellow")
     frm1.place(x=0, y=0)
     lbl_text = tk.Label(frm1, text="Canvas and frm_add are two different widgets in the Tkinter GUI toolkit in Python,\n and they have different purposes.",
@@ -562,7 +562,11 @@ menu_bar.add_cascade(label="Datasets", menu=data_menu)
 cam_menu = tk.Menu(menu_bar, tearoff=0)
 cam_menu.add_command(label="Recognize criminals")
 menu_bar.add_cascade(label="Camera", menu=cam_menu)
-menu_bar.add_cascade(label="Help", command=info)
+
+help_menu = tk.Menu(menu_bar, tearoff=0)
+help_menu.add_command(label="Help", command=help)
+help_menu.add_command(label="About us")
+help_menu.add_cascade(label="More", menu=help_menu)
 
 
 home.mainloop()
