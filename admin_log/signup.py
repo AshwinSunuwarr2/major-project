@@ -1,10 +1,11 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
+import mysql.connector
 
 
 
-class Logout:
+class SignUp:
     def __init__(self, root):
         self.root = root
         self.root.geometry("1250x850+70+0")
@@ -16,20 +17,24 @@ class Logout:
         signup_color = "#432771"
         signup_font = "Courier new"
 
-        outmenu_bar = Menu(self.root)
-        self.root.config(menu=outmenu_bar)
+        self.var_user = StringVar()
+        self.var_psw = StringVar()
+        self.var_cpsw = StringVar()
 
-        home_menu = Menu(outmenu_bar, tearoff=0)
-        home_menu.add_command(label='Home page')
-        home_menu.add_separator()
-        home_menu.add_command(label="Exit", command=self.root.quit)
-        outmenu_bar.add_cascade(label="HOME", menu=home_menu)
+        # outmenu_bar = Menu(self.root)
+        # self.root.config(menu=outmenu_bar)
 
-        user_menu = Menu(outmenu_bar, tearoff=0)
-        user_menu.add_command(label="Sign in")
-        user_menu.add_separator()
-        user_menu.add_command(label="Sign up")
-        outmenu_bar.add_cascade(label="USER", menu=user_menu)
+        # home_menu = Menu(outmenu_bar, tearoff=0)
+        # home_menu.add_command(label='Home page')
+        # home_menu.add_separator()
+        # home_menu.add_command(label="Exit", command=self.root.quit)
+        # outmenu_bar.add_cascade(label="HOME", menu=home_menu)
+
+        # user_menu = Menu(outmenu_bar, tearoff=0)
+        # user_menu.add_command(label="Sign in")
+        # user_menu.add_separator()
+        # user_menu.add_command(label="Sign up")
+        # outmenu_bar.add_cascade(label="USER", menu=user_menu)
 
 
         frm = Frame(self.root, width=800, height=550, bg="white")
@@ -48,7 +53,7 @@ class Logout:
                 user.insert(0, "Username")
 
         # username label
-        user = Entry(frm, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
+        user = Entry(frm, textvariable=self.var_user, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
         user.place(x=170, y=158)
         user.insert(0, "Username")
         user.bind('<FocusIn>', on_enter)
@@ -65,7 +70,7 @@ class Logout:
                 psw.insert(0, "Password")
 
         # password label
-        psw = Entry(frm, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
+        psw = Entry(frm, textvariable=self.var_psw, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
         psw.place(x=170, y=225)
         psw.insert(0, "Password")
         psw.bind('<FocusIn>', on_enter)
@@ -82,7 +87,7 @@ class Logout:
                 c_psw.insert(0, "Confirm Password")
 
         # confirm password label
-        c_psw = Entry(frm, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
+        c_psw = Entry(frm, textvariable=self.var_cpsw, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
         c_psw.insert(0, "Confirm Password")
         c_psw.place(x=170, y=295)
         c_psw.bind('<FocusIn>', on_enter)
@@ -90,7 +95,7 @@ class Logout:
 
         Frame(frm, width=350, height=2, bg="black").place(x=169, y=320)
 
-        btn_signup = Button(frm, text="SIGN UP", width=18, bg=signup_color, cursor='hand2', fg="white", font=(signup_font, 16, "bold"),relief="flat", border=0)
+        btn_signup = Button(frm, text="SIGN UP", width=18, bg=signup_color, cursor='hand2', fg="white", font=(signup_font, 16, "bold"),relief="flat", border=0, command=self.signup_db)
         btn_signup.place(x=200, y=360)
 
         # sign up btn
@@ -99,11 +104,64 @@ class Logout:
         btn_log = Button(frm, text="Sign in", border=0, cursor="hand2", font=(signup_font, 12, "italic bold"), relief="flat", fg="#e13746", bg="white")
         btn_log.place(x=407, y=439)
 
+    
+# sign up confiramtion
+    def signup_db(self):
+        name = self.var_user.get()
+        passw = self.var_psw.get()
+        c_passw = self.var_cpsw.get()
+
+
+        if name ==  '' or passw == '' or c_passw == '':
+            messagebox.showerror('Invalid', 'You must fill all fields', parent=self.root)
+            return
+
+        if passw != c_passw:
+            messagebox.showerror('Invalid', 'Both password should match.', parent=self.root)
+            return
+
+        if len(passw) < 8:
+            messagebox.showerror('Invalid', 'Password must be atleast of 8 characters.', parent=self.root)
+            return
+
+        conn = mysql.connector.connect(
+        host  = 'localhost',
+        user = 'root',
+        password = '',
+        database = 'mydb',
+        port = '3306'
+         )
+
+        c = conn.cursor()
+        insert_admin = "insert into admins(user, password) values (%s, %s)"
+        vals = (name, passw)
+        
+        try:
+            c.execute(insert_admin, vals)
+            conn.commit()
+            conn.close()
+            messagebox.showinfo('Success', "You're now registered.", parent=self.root)
+            return
+        
+        except mysql.connector.Error as error:
+            messagebox.showerror('Database error', str(error), parent=self.root)
+
+        self.var_user.delete(0, END)
+        self.var_psw.delete(0, END)
+        self.var_cpsw.delete(0, END)
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
     root = Tk()
-    login = Logout(root)
+    signup = SignUp(root)
     root.mainloop()
 
 
