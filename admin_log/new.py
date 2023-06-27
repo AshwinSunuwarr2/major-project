@@ -259,11 +259,12 @@ class SignUp:
         self.var_psw = StringVar()
         self.var_cpsw = StringVar()
 
+        frm_color = "#6f86b9"
 
-        frm = Frame(self.root, width=800, height=550, bg="white")
+        frm = Frame(self.root, width=800, height=550, bg=frm_color)
         frm.place(x=200, y=100)
 
-        lbl_head = Label(frm, text="Sign up", bg="white", fg=signup_color, font=(signup_font, 28, "bold"))
+        lbl_head = Label(frm, text="Sign up", bg=frm_color, fg=signup_color, font=(signup_font, 28, "bold"))
         lbl_head.place(x=170, y=80)
 
 
@@ -276,7 +277,7 @@ class SignUp:
                 user.insert(0, "Username")
 
         # username label
-        user = Entry(frm, textvariable=self.var_user, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
+        user = Entry(frm, textvariable=self.var_user, width=32, fg="black", border=0, bg=frm_color, font=(signup_font, 16))
         user.place(x=170, y=158)
         user.insert(0, "Username")
         user.bind('<FocusIn>', on_enter)
@@ -293,7 +294,7 @@ class SignUp:
                 psw.insert(0, "Password")
 
         # password label
-        psw = Entry(frm, textvariable=self.var_psw, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
+        psw = Entry(frm, textvariable=self.var_psw, width=32, fg="black", border=0, bg=frm_color, font=(signup_font, 16))
         psw.place(x=170, y=225)
         psw.insert(0, "Password")
         psw.bind('<FocusIn>', on_enter)
@@ -310,7 +311,7 @@ class SignUp:
                 c_psw.insert(0, "Confirm Password")
 
         # confirm password label
-        c_psw = Entry(frm, textvariable=self.var_cpsw, width=32, fg="black", border=0, bg="white", font=(signup_font, 16))
+        c_psw = Entry(frm, textvariable=self.var_cpsw, width=32, fg="black", border=0, bg=frm_color, font=(signup_font, 16))
         c_psw.insert(0, "Confirm Password")
         c_psw.place(x=170, y=295)
         c_psw.bind('<FocusIn>', on_enter)
@@ -318,13 +319,13 @@ class SignUp:
 
         Frame(frm, width=350, height=2, bg="black").place(x=169, y=320)
 
-        btn_signup = Button(frm, text="SIGN UP", width=18, bg=signup_color, cursor='hand2', fg="white", font=(signup_font, 16, "bold"),relief="flat", border=0, command=self.signup_db)
+        btn_signup = Button(frm, text="SIGN UP", width=18, bg=signup_color, cursor='hand2', fg=frm_color, font=(signup_font, 16, "bold"),relief="flat", border=0, command=self.signup_db)
         btn_signup.place(x=200, y=360)
 
         # sign up btn
-        lbl_signup = Label(frm, text="Already have an account?", bg="white", fg="black", font=(signup_font, 12))
+        lbl_signup = Label(frm, text="Already have an account?", bg=frm_color, fg="black", font=(signup_font, 12))
         lbl_signup.place(x=160, y=440)
-        btn_log = Button(frm, text="Sign in", border=0, cursor="hand2", font=(signup_font, 12, "italic bold"), relief="flat", fg="#e13746", bg="white", command=self.signin)
+        btn_log = Button(frm, text="Sign in", border=0, cursor="hand2", font=(signup_font, 12, "italic bold"), relief="flat", fg="#e13746", bg=frm_color, command=self.signin)
         btn_log.place(x=407, y=439)
 
 
@@ -343,8 +344,8 @@ class SignUp:
         c_passw = self.var_cpsw.get()
 
 
-        if name ==  '' or passw == '' or c_passw == '':
-            messagebox.showerror('Invalid', 'You must fill all fields', parent=self.root)
+        if name ==  'Username' or passw == 'Password' or c_passw == 'Confirm password':
+            messagebox.showerror('Invalid', 'Please fill fields properly', parent=self.root)
             return
 
         if passw != c_passw:
