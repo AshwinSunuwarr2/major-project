@@ -29,7 +29,7 @@ class AfterLogin:
         home_menu.add_separator()
         home_menu.add_command(label="Update Criminal Details", command=self.update_criminal)
         home_menu.add_separator()
-        home_menu.add_command(label="Delete Criminal Details")
+        home_menu.add_command(label="Delete Criminal Details", command=self.delete_criminal)
         home_menu.add_separator()
         home_menu.add_command(label="Exit", command=self.root.quit)
         home_menu.add_separator()
@@ -51,17 +51,28 @@ class AfterLogin:
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Get help", command=self.help)
         help_menu.add_separator()
-        help_menu.add_command(label="About us")
+        help_menu.add_command(label="About us", command=self.aboutus)
         help_menu.add_separator()
         menu_bar.add_cascade(label="More", menu=help_menu)
 
 
-#-------------   functions  --------------------#
+
+
+
+#-------------   functions  --------------------=============================================================================================#
+
 
     def help(self):
         frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
         frm1.place(x=0, y=0)
-        lbl_text = Label(frm1, text="Canvas and frm_add are two different widgets in the Tkinter GUI toolkit in Python,\n and they have different purposes.",
+        lbl_text = Label(frm1, bg=main_color, text="Ashwin181209@ncit.edu.np\n Irajk181216@ncit.edu.np\n Ishan181217@ncit.edu.np",
+                                font=(main_font, 18, 'bold'))
+        lbl_text.place(x=50, y=60, anchor='w')
+
+    def aboutus(self):
+        frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
+        frm1.place(x=0, y=0)
+        lbl_text = Label(frm1, bg=main_color, text="Canvas and frm_add are two different widgets in the Tkinter GUI toolkit in Python,\n and they have different purposes.",
                                 font=(main_font, 18, 'bold'))
         lbl_text.place(x=30, y=60)
         
@@ -485,52 +496,52 @@ class AfterLogin:
 
 
         ############  labels  #########33##########
-        lbl_head = Label(frm_add, text='ID of criminal you want to update: ', bg=add_color, font=(main_font, 15))
-        lbl_head.place(x=300, y=30, anchor='n')
-        id_entry = Entry(frm_add, width=5, font=('Courier New', 15))
-        id_entry.place(x=510, y=30)
+        lbl_head = Label(frm_add, text='ID of criminal you want to update: ', fg='red', bg=add_color, font=(main_font, 18))
+        lbl_head.place(x=360, y=30, anchor='n')
+        id_entry = Entry(frm_add, width=7, font=('Courier New', 24), bd=5)
+        id_entry.place(x=600, y=30)
 
         #name label
         text_label = Label(frm_add, text="Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
-        text_label.place(x=260, y=100, anchor='ne')
+        text_label.place(x=300, y=100, anchor='ne')
         name_entry = Entry(frm_add, width=40, font=('Courier New', 16))
-        name_entry.place(x=350, y=100)
+        name_entry.place(x=380, y=100)
 
         #father name
         father_label = Label(frm_add, fg='#383838', text="Father's Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
-        father_label.place(x=260, y=160, anchor='ne')
+        father_label.place(x=300, y=160, anchor='ne')
         father_entry = Entry(frm_add, width=40, font=('Courier New', 16))
-        father_entry.place(x=350, y=160)
+        father_entry.place(x=380, y=160)
 
         #mother name
         mother_label = Label(frm_add, fg='#383838', text="Mother's Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
-        mother_label.place(x=260, y=220, anchor='ne')
+        mother_label.place(x=300, y=220, anchor='ne')
         mother_entry = Entry(frm_add, width=40, font=('Courier New', 16))
-        mother_entry.place(x=350, y=220)
+        mother_entry.place(x=380, y=220)
 
         #age
         text_label = Label(frm_add, text="Age:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
-        text_label.place(x=260, y=280, anchor='ne')
+        text_label.place(x=300, y=280, anchor='ne')
         age_entry = Entry(frm_add, width=40, font=('Courier New', 16))
-        age_entry.place(x=350, y=280)
+        age_entry.place(x=380, y=280)
 
         #gender
         text_label = Label(frm_add, text="Gender:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
-        text_label.place(x=260, y=340, anchor='ne')
+        text_label.place(x=300, y=340, anchor='ne')
         gender_entry = Entry(frm_add, width=40, font=('Courier New', 16))
-        gender_entry.place(x=350, y=340)
+        gender_entry.place(x=380, y=340)
 
         #nationality
         text_label = Label(frm_add, text="Nationality:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
-        text_label.place(x=260, y=400, anchor='ne')
+        text_label.place(x=300, y=400, anchor='ne')
         nationality_entry = Entry(frm_add, width=40, font=('Courier New', 16))
-        nationality_entry.place(x=350, y=400)
+        nationality_entry.place(x=380, y=400)
 
         #crime
         text_label = Label(frm_add, text="Crime Committed:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
-        text_label.place(x=260, y=460, anchor='ne')
+        text_label.place(x=300, y=460, anchor='ne')
         crime_entry = Text(frm_add, width=40, height=1, font=('Courier New', 16))
-        crime_entry.place(x=350, y=460)
+        crime_entry.place(x=380, y=460)
 
 
         #image display garna labels haru
@@ -582,6 +593,74 @@ class AfterLogin:
 
         confirm_btn.bind("<Enter>", on_enter)
         confirm_btn.bind("<Leave>", on_leave)    
+
+
+    def delete_criminal(self):
+        del_color = "#b2bedc"
+        del_font = 'courier new'
+
+
+        def delete_confirm():
+            c_id = entry_id.get().strip()
+
+            if c_id == "":
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to delete.')
+                return
+            try:
+                c_id = int(c_id)
+            except ValueError:
+                messagebox.showerror('Invalid', "Invalid ID.")
+                return
+            
+            conn = mysql.connector.connect(
+                host = 'localhost',
+                database = 'mydb',
+                port = '3306',
+                user = 'root',
+                password  = ''
+            )
+            c = conn.cursor()
+
+            fetch_id = "select * from criminal_reg where id = %s"
+            values = (c_id,)
+            c.execute(fetch_id, values)
+            crim_data = c.fetchone()
+
+            if crim_data:
+                crim_delete = "delete from criminal_reg where id=%s"
+                vals = (c_id,)
+
+                try:
+                    c.execute(crim_delete, vals)
+                    conn.commit()
+                    conn.close()
+
+                    messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.")
+
+                except mysql.connector.Error as error:
+                    messagebox.showerror("Database Error", str(error))
+                    return
+            else:
+                messagebox.showerror('Invalid', 'ID not found.')
+                return
+            
+            entry_id.delete(0, END)
+
+        frm_del = Frame(self.root, width=1250, height=850, bg=del_color)
+        frm_del.place(x=0, y=0)
+
+        lbl_head = Label(frm_del, text="Delete Criminal", font=(del_font, 28, 'bold'), bg=del_color)
+        lbl_head.place(x=400, y=170)
+
+        lbl_text = Label(frm_del, text="Enter the criminal ID you want to delete: ", fg="red", bg=del_color, font=(del_font, 20))
+        lbl_text.place(x=320, y=275)
+
+        entry_id = Entry(frm_del, bg="white", width=7,  font=(del_font, 28), bd=5)  # Multiline text input using the Text widget
+        entry_id.place(x=500, y=340)
+
+        btn_del = Button(frm_del, width=18, text="DELETE", bg='orange', font=(del_font, 20), cursor="hand2", relief='raised', command=delete_confirm)
+        btn_del.place(x=410, y=450)
+
 
 
 
