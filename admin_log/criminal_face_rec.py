@@ -156,9 +156,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 
 import mysql.connector
-from forgotp import ForgetPass
-from after_login import AfterLogin
-from signup import SignUp
+
 
 
 class FaceRecognitionApp:
@@ -714,14 +712,17 @@ class ForgetPass:
 main_color = "#6f86b9"
 main_font = "Courier new"
 
+
 class AfterLogin:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1250x850+70+0")
-        title_color = "#6f86b9"
+        # self.root.geometry("1250x850+70+0")
+        root.state('zoomed')
+
+        title_color = "#b2bedc"
         self.root.config(bg=title_color)
         self.root.title("Criminal Face Recognition System")
-        self.root.resizable(False, False)
+        # self.root.resizable(False, False)
 
 
         menu_bar = Menu(self.root)
@@ -733,7 +734,7 @@ class AfterLogin:
         home_menu.add_separator()
         home_menu.add_command(label="Update Criminal Details", command=self.update_criminal)
         home_menu.add_separator()
-        home_menu.add_command(label="Delete Criminal Details", command=self.delete_criminal)
+        home_menu.add_command(label="Delete Criminal Details", command=self.criminal_details)
         home_menu.add_separator()
         home_menu.add_command(label="Exit", command=self.root.quit)
         home_menu.add_separator()
@@ -755,17 +756,28 @@ class AfterLogin:
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Get help", command=self.help)
         help_menu.add_separator()
-        help_menu.add_command(label="About us")
+        help_menu.add_command(label="About us", command=self.aboutus)
         help_menu.add_separator()
         menu_bar.add_cascade(label="More", menu=help_menu)
 
 
-#-------------   functions  --------------------#
+
+
+
+#-------------   functions  --------------------=============================================================================================#
+
 
     def help(self):
         frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
-        frm1.place(x=0, y=0)
-        lbl_text = Label(frm1, text="Canvas and frm_add are two different widgets in the Tkinter GUI toolkit in Python,\n and they have different purposes.",
+        frm1.place(x=135, y=0)
+        lbl_text = Label(frm1, bg=main_color, text="Ashwin181209@ncit.edu.np\n Irajk181216@ncit.edu.np\n Ishan181217@ncit.edu.np",
+                                font=(main_font, 18, 'bold'))
+        lbl_text.place(x=50, y=60, anchor='w')
+
+    def aboutus(self):
+        frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
+        frm1.place(x=135, y=0)
+        lbl_text = Label(frm1, bg=main_color, text="Canvas and frm_add are two different widgets in the Tkinter GUI toolkit in Python,\n and they have different purposes.",
                                 font=(main_font, 18, 'bold'))
         lbl_text.place(x=30, y=60)
         
@@ -883,7 +895,7 @@ class AfterLogin:
 
 
         frm_add = Frame(self.root, bg=add_color, width=1250, height=850)
-        frm_add.place(x=0, y=0)
+        frm_add.place(x=135, y=0)
 
         lbl_head = Label(frm_add, text='Register Criminals', bg=add_color, font=(add_font, 28, 'bold'))
         lbl_head.place(x=380, y=30)
@@ -1005,7 +1017,7 @@ class AfterLogin:
     def update_criminal(self):
         add_color = "#b2bedc"
         frm_add = Frame(self.root, width=1250, height=850, bg=add_color)
-        frm_add.place(x=0, y=0)
+        frm_add.place(x=135, y=0)
 
         def add_image(label, image_variable):
             f_types = [('PNG files', '*.png'), ('JPEG files', '*.jpg;*.jpeg')]
@@ -1044,10 +1056,6 @@ class AfterLogin:
                 messagebox.showerror('Invalid', 'ID is not valid.')
                 return
             
-            if updated_name == '' and updated_father_name == '' and updated_mother_name == '' and updated_age == '' and updated_nationality == '' and updated_gender == '' and updated_crime == '':
-                messagebox.showinfo('Invalid', "No changes made.")
-                return
-            
             if updated_age != '':
                 try:
                     updated_age = int(updated_age) 
@@ -1081,6 +1089,10 @@ class AfterLogin:
                         updated_image_data.append(file.read())
 
             if crim_data:
+                if updated_name == '' and updated_father_name == '' and updated_mother_name == '' and updated_age == '' and updated_nationality == '' and updated_gender == '' and updated_crime == '':
+                    messagebox.showinfo('Invalid', "No changes made.")
+                    return
+                
                 data_update = "UPDATE criminal_reg SET "
                 update_vals = {}
 
@@ -1184,7 +1196,7 @@ class AfterLogin:
                 right_file.set("")
                 id_entry.delete(0, END)
                 
-                messagebox.showerror('Invalid', 'Invalid ID.')
+                messagebox.showerror('Invalid', 'Invalid ID.')            
                 return
 
 
@@ -1288,7 +1300,7 @@ class AfterLogin:
         confirm_btn.bind("<Leave>", on_leave)    
 
 
-    def delete_criminal(self):
+    def criminal_details(self):
         del_color = "#b2bedc"
         del_font = 'courier new'
 
@@ -1339,21 +1351,104 @@ class AfterLogin:
             
             entry_id.delete(0, END)
 
-        frm_del = Frame(self.root, width=1250, height=850, bg=del_color)
-        frm_del.place(x=0, y=0)
+        def view_details():
+            c_id = entry_id.get().strip()
 
-        lbl_head = Label(frm_del, text="Delete Criminal", font=(del_font, 28, 'bold'), bg=del_color)
-        lbl_head.place(x=400, y=170)
+            if c_id == "":
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to view.')
+                return
+            try:
+                c_id = int(c_id)
+            except ValueError:
+                messagebox.showerror('Invalid', "Invalid ID.")
+                return
 
-        lbl_text = Label(frm_del, text="Enter the criminal ID you want to delete: ", fg="red", bg=del_color, font=(del_font, 20))
-        lbl_text.place(x=320, y=275)
+            conn = mysql.connector.connect(
+                host='localhost',
+                database='mydb',
+                port='3306',
+                user='root',
+                password=''
+            )
+            c = conn.cursor()
 
-        entry_id = Entry(frm_del, bg="white", width=7,  font=(del_font, 28), bd=5)  # Multiline text input using the Text widget
-        entry_id.place(x=500, y=340)
+            fetch_id = "select * from criminal_reg where id = %s"
+            values = (c_id,)
+            c.execute(fetch_id, values)
+            crim_data = c.fetchall()
 
-        btn_del = Button(frm_del, width=18, text="DELETE", bg='orange', font=(del_font, 20), cursor="hand2", relief='raised', command=delete_confirm)
-        btn_del.place(x=410, y=450)
+            if len(crim_data) != 0:
+                self.criminal_tbl.delete(*self.criminal_tbl.get_children())  # Clear existing data in the treeview
+                for row in crim_data:
+                    self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+                conn.commit()
+            else:
+                messagebox.showerror('Invalid', 'ID not found.')
+                return
 
+            conn.close()
+
+            entry_id.delete(0, END)
+
+
+
+        
+
+        frm_detail = Frame(self.root, width=1250, height=850, bg=del_color)
+        frm_detail.place(x=135, y=0)
+
+        lbl_head = Label(frm_detail, text="Delete Criminal", font=(del_font, 28, 'bold'), bg=del_color)
+        lbl_head.place(x=400, y=90)
+
+        lbl_text = Label(frm_detail, text="Enter the criminal ID: ", fg="red", bg=del_color, font=(del_font, 20))
+        lbl_text.place(x=250, y=185)
+
+        entry_id = Entry(frm_detail, bg="white", width=7,  font=(del_font, 28), bd=5)  
+        entry_id.place(x=620, y=175)
+
+        btn_del = Button(frm_detail, width=12, text="DELETE", bg='orange', font=(del_font, 18), cursor="hand2", relief='raised', command=delete_confirm)
+        btn_del.place(x=390, y=250)
+
+        btn_view = Button(frm_detail, width=12, text="VIEW", bg='orange', font=(del_font, 18), cursor="hand2", relief='raised', command=view_details)
+        btn_view.place(x=590, y=250)
+    
+        frm_view = LabelFrame(frm_detail, text= "Criminal details", width=800, height=380, bg="white")
+        frm_view.place(x=240, y=320)
+        table_frm = Frame(frm_view, bg="white")
+        table_frm.place(x=0, y=0, width=780, height=360)
+
+        scroll_x = ttk.Scrollbar(table_frm, orient=HORIZONTAL)
+        scroll_y = ttk.Scrollbar(table_frm, orient=VERTICAL)
+        
+        self.criminal_tbl = ttk.Treeview(table_frm, column=("id", "name", "father_name", "mother_name", "age", "gender", "nationality", "crime"), xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
+
+        scroll_x.pack(side=BOTTOM, fill=X)
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_x.config(command=self.criminal_tbl.xview)
+        scroll_y.config(command=self.criminal_tbl.yview)
+
+
+        self.criminal_tbl.heading("id", text="ID")
+        self.criminal_tbl.heading("name", text="Name")
+        self.criminal_tbl.heading("father_name", text="Father's Name")
+        self.criminal_tbl.heading("mother_name", text="Mother's Name")
+        self.criminal_tbl.heading("age", text="Age")
+        self.criminal_tbl.heading("gender", text="Gender")
+        self.criminal_tbl.heading("nationality", text="Nation")
+        self.criminal_tbl.heading("crime", text="Crime Committed")
+        self.criminal_tbl["show"] = "headings"
+
+        
+        self.criminal_tbl.column("id", width=60)
+        self.criminal_tbl.column("name", width=180)
+        self.criminal_tbl.column("father_name", width=180)
+        self.criminal_tbl.column("mother_name", width=180)
+        self.criminal_tbl.column("age", width=60)
+        self.criminal_tbl.column("gender", width=100)
+        self.criminal_tbl.column("nationality", width=140)
+        self.criminal_tbl.column("crime", width=300)
+
+        self.criminal_tbl.pack(fill=BOTH, expand=1)
 
 
 
