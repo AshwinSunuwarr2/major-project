@@ -7,34 +7,40 @@ import mysql.connector
 
 import io
 
-
 main_color = "#b2bedc"
-"#6f86b9"
+#6f86b9
 main_font = "Courier new"
-
 
 class AfterLogin:
     def __init__(self, root):
         self.root = root
-        # self.root.geometry("1250x850+70+0")
+        # self.root.geometry("1250x750+70+0")
         root.state('zoomed')
-
         title_color = "#b2bedc"
         self.root.config(bg=title_color)
         self.root.title("Criminal Face Recognition System")
-        # self.root.resizable(False, False)
+        self.root.resizable(False, False)
 
+
+#   bg image
+        # image = Image.open("bg_img/home_bg.jpg")
+        # image = image.resize((self.root.winfo_screenwidth(), self.root.winfo_screenheight()), Image.LANCZOS)
+        # bgimg = ImageTk.PhotoImage(image)
+
+        # bg_lbl = Label(self.root, image=bgimg)
+        # bg_lbl.image = bgimg
+        # bg_lbl.pack(fill=BOTH, expand=True)
 
         menu_bar = Menu(self.root)
         self.root.config(menu=menu_bar)
 
         # Create File menu
         home_menu = Menu(menu_bar, tearoff=0)
-        home_menu.add_command(label="Register Criminal", command=self.criminal_reg)
+        home_menu.add_command(label="Register Criminal", command=lambda: (self.criminal_reg(), self.register_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="Update Criminal Details", command=self.update_criminal)
+        home_menu.add_command(label="Update Criminal Details", command=lambda: (self.update_criminal(), self.update_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="Delete Criminal Details", command=self.criminal_details)
+        home_menu.add_command(label="View and Delete Criminal Details", command=lambda: (self.criminal_details(), self.view_del_title()))
         home_menu.add_separator()
         home_menu.add_command(label="Exit", command=self.root.quit)
         home_menu.add_separator()
@@ -54,17 +60,36 @@ class AfterLogin:
         menu_bar.add_cascade(label="Camera", menu=cam_menu)
 
         help_menu = Menu(menu_bar, tearoff=0)
-        help_menu.add_command(label="Get help", command=self.help)
+        help_menu.add_command(label="Get help", command=lambda: (self.help(), self.help_title()))
         help_menu.add_separator()
-        help_menu.add_command(label="About us", command=self.aboutus)
+        help_menu.add_command(label="About us", command=lambda: (self.aboutus(), self.aboutus_title()))
         help_menu.add_separator()
         menu_bar.add_cascade(label="More", menu=help_menu)
 
 
 
-
-
 #-------------   functions  --------------------=============================================================================================#
+           
+           
+            #######   title updates ###########3
+    def update_title(self):
+        self.root.title("Update Criminal details")
+
+    def register_title(self):
+        self.root.title("Register New Criminals")
+    
+    def view_del_title(self):
+        self.root.title("View and Delete Criminal Details")
+
+    def help_title(self):
+        self.root.title("Get Help")
+
+    def aboutus_title(self):
+        self.root.title("About Us")
+
+    def update_title(self):
+        self.root.title("Update Criminal Details")
+
 
 
     def help(self):
@@ -197,8 +222,8 @@ class AfterLogin:
         frm_add = Frame(self.root, bg=add_color, width=1250, height=850)
         frm_add.place(x=135, y=0)
 
-        lbl_head = Label(frm_add, text='Register Criminals', bg=add_color, font=(add_font, 28, 'bold'))
-        lbl_head.place(x=380, y=30)
+        # lbl_head = Label(frm_add, text='Register Criminals', bg=add_color, font=(add_font, 28, 'bold'))
+        # lbl_head.place(x=380, y=30)
 
         #name label
         asterisk_label = Label(frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
@@ -313,7 +338,7 @@ class AfterLogin:
         confirm_btn.bind("<Enter>", on_enter)
         confirm_btn.bind("<Leave>", on_leave)
 
-       
+
     def update_criminal(self):
         add_color = "#b2bedc"
         frm_add = Frame(self.root, width=1250, height=850, bg=add_color)
@@ -389,7 +414,7 @@ class AfterLogin:
                         updated_image_data.append(file.read())
 
             if crim_data:
-                if updated_name == '' and updated_father_name == '' and updated_mother_name == '' and updated_age == '' and updated_nationality == '' and updated_gender == '' and updated_crime == '':
+                if updated_name == '' and updated_father_name == '' and updated_mother_name == '' and updated_age == '' and updated_nationality == '' and updated_gender == '' and updated_crime == '' and updated_image_data == '':
                     messagebox.showinfo('Invalid', "No changes made.")
                     return
                 
@@ -431,20 +456,21 @@ class AfterLogin:
                 else:
                     update_vals['crime'] = crim_data[7]
 
-                if updated_image_data and updated_image_data[0]:
+                if len(updated_image_data) > 0 and updated_image_data[0]:
                     update_vals['front_img'] = updated_image_data[0]
                 else:
                     update_vals['front_img'] = crim_data[8]
 
-                if updated_image_data and updated_image_data[1]:
+                if len(updated_image_data) > 1 and updated_image_data[1]:
                     update_vals['left_img'] = updated_image_data[1]
                 else:
                     update_vals['left_img'] = crim_data[9]
 
-                if updated_image_data and updated_image_data[2]:
+                if len(updated_image_data) > 2 and updated_image_data[2]:
                     update_vals['right_img'] = updated_image_data[2]
                 else:
                     update_vals['right_img'] = crim_data[10]
+
 
                 data_update += ', '.join(f"{field} = %s" for field in update_vals.keys())
                 data_update += " WHERE id = %s"
@@ -501,10 +527,13 @@ class AfterLogin:
 
 
         ############  labels  #########33##########
-        lbl_head = Label(frm_add, text='ID of criminal you want to update: ', fg='red', bg=add_color, font=(main_font, 18))
-        lbl_head.place(x=360, y=30, anchor='n')
-        id_entry = Entry(frm_add, width=7, font=('Courier New', 24), bd=5)
-        id_entry.place(x=600, y=30)
+        # lbl_heading = Label(frm_add, text="Update Criminal Details", font=('Courier new', 20, 'bold'), bg="#b2bedc")
+        # lbl_heading.place(x=500, y=10)
+
+        lbl_head = Label(frm_add, text="ID:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        lbl_head.place(x=300, y=50, anchor='ne')
+        id_entry = Entry(frm_add, width=7, font=('Courier New', 20), bd=3)
+        id_entry.place(x=600, y=35, anchor='n')
 
         #name label
         text_label = Label(frm_add, text="Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
@@ -691,31 +720,57 @@ class AfterLogin:
             entry_id.delete(0, END)
 
 
+        def viewall_details():
+
+            conn = mysql.connector.connect(
+                host='localhost',
+                database='mydb',
+                port='3306',
+                user='root',
+                password=''
+            )
+            c = conn.cursor()
+
+            fetch_id = "select * from criminal_reg"
+            c.execute(fetch_id)
+            crim_data = c.fetchall()
+
+            if len(crim_data) != 0:
+                self.criminal_tbl.delete(*self.criminal_tbl.get_children())  # Clear existing data in the treeview
+                for row in crim_data:
+                    self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+                conn.commit()
+            else:
+                messagebox.showerror('Invalid', 'Empty database')
+                return
+
+            conn.close()
 
         
 
         frm_detail = Frame(self.root, width=1250, height=850, bg=del_color)
         frm_detail.place(x=135, y=0)
 
-        lbl_head = Label(frm_detail, text="Delete Criminal", font=(del_font, 28, 'bold'), bg=del_color)
-        lbl_head.place(x=400, y=90)
 
-        lbl_text = Label(frm_detail, text="Enter the criminal ID: ", fg="red", bg=del_color, font=(del_font, 20))
-        lbl_text.place(x=250, y=185)
+        lbl_text = Label(frm_detail, text="Enter criminal ID: ", bg=del_color, font=(del_font, 16))
+        lbl_text.place(x=70, y=60)
 
-        entry_id = Entry(frm_detail, bg="white", width=7,  font=(del_font, 28), bd=5)  
-        entry_id.place(x=620, y=175)
+        entry_id = Entry(frm_detail, bg="white", width=7,  font=(del_font, 20), bd=5)  
+        entry_id.place(x=320, y=52)
 
-        btn_del = Button(frm_detail, width=12, text="DELETE", bg='orange', font=(del_font, 18), cursor="hand2", relief='raised', command=delete_confirm)
-        btn_del.place(x=390, y=250)
+        btn_del = Button(frm_detail, width=9, text="VIEW ALL", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=viewall_details)
+        btn_del.place(x=600, y=52)
 
-        btn_view = Button(frm_detail, width=12, text="VIEW", bg='orange', font=(del_font, 18), cursor="hand2", relief='raised', command=view_details)
-        btn_view.place(x=590, y=250)
+        btn_view = Button(frm_detail, width=9, text="VIEW", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=view_details)
+        btn_view.place(x=730, y=52)
+
+        btn_view = Button(frm_detail, width=9, text="DELETE", bg='red', fg="white", font=(del_font, 16, 'bold'), cursor="hand2", relief="sunken", command=delete_confirm)
+        btn_view.place(x=1120, y=52)
     
-        frm_view = LabelFrame(frm_detail, text= "Criminal details", width=800, height=380, bg="white")
-        frm_view.place(x=240, y=320)
-        table_frm = Frame(frm_view, bg="white")
-        table_frm.place(x=0, y=0, width=780, height=360)
+        frm_view = LabelFrame(frm_detail, text= "Criminal details", font=('courier new', 12), width=1185, height=700, bg=del_color)
+        frm_view.place(x=65, y=95)
+        table_frm = Frame(frm_view, bg="black", bd=1)
+        table_frm.place(x=5, y=5, width=1170, height=660)
 
         scroll_x = ttk.Scrollbar(table_frm, orient=HORIZONTAL)
         scroll_y = ttk.Scrollbar(table_frm, orient=VERTICAL)
