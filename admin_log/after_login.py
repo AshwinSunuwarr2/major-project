@@ -42,28 +42,26 @@ class AfterLogin:
         home_menu.add_separator()
         home_menu.add_command(label="View and Delete Criminal Details", command=lambda: (self.criminal_details(), self.view_del_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="Exit", command=self.root.quit)
-        home_menu.add_separator()
+        home_menu.add_command(label="LOGOUT", command=self.logout)
         menu_bar.add_cascade(label="Home", menu=home_menu)
 
 
         data_menu = Menu(menu_bar, tearoff=0)
-        data_menu.add_command(label="View Criminal Details")
+        data_menu.add_command(label="Trained Images")
         data_menu.add_separator()
         data_menu.add_command(label="View Dataset")
-        data_menu.add_separator()
+
         menu_bar.add_cascade(label="Datasets", menu=data_menu)
 
         cam_menu = Menu(menu_bar, tearoff=0)
         cam_menu.add_command(label="Recognize Criminals")
-        cam_menu.add_separator()
         menu_bar.add_cascade(label="Camera", menu=cam_menu)
 
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Get help", command=lambda: (self.help(), self.help_title()))
         help_menu.add_separator()
         help_menu.add_command(label="About us", command=lambda: (self.aboutus(), self.aboutus_title()))
-        help_menu.add_separator()
+
         menu_bar.add_cascade(label="More", menu=help_menu)
 
 
@@ -91,6 +89,13 @@ class AfterLogin:
         self.root.title("Update Criminal Details")
 
 
+
+    def logout(self):
+        ans = messagebox.askyesno("Logout", "Are you sure you want to logout? ")
+        if ans == True:
+            self.root.destroy()
+        else:
+            return
 
     def help(self):
         frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
@@ -665,11 +670,15 @@ class AfterLogin:
                 vals = (c_id,)
 
                 try:
-                    c.execute(crim_delete, vals)
-                    conn.commit()
-                    conn.close()
+                    result = messagebox.askyesno("Warning", f"Are you sure you want to delete {crim_data[0]} id criminal?")
+                    if result == True:
+                        c.execute(crim_delete, vals)
+                        conn.commit()
+                        conn.close()
 
-                    messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.")
+                        messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.")
+                    else:
+                        return
 
                 except mysql.connector.Error as error:
                     messagebox.showerror("Database Error", str(error))

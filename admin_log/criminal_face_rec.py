@@ -1,154 +1,3 @@
-# import tkinter as tk
-# from tkinter import ttk, Toplevel
-# from PIL import Image, ImageTk
-
-# root = tk.Tk()
-# root.geometry("1190x700")
-
-# title_color = "#6f86b9"
-# root.config(bg=title_color, padx=20, pady=20)
-# root.title("Criminal Face Recognition System")
-
-# my_color = "#6f86b9"
-
-# style = ttk.Style()
-# style.configure('TRoundedFrame.TFrame', background=my_color, borderwidth=5, relief='flat')
-
-
-# ############## signup window  ############
-# def nav_signup():
-
-#     root.withdraw()
-#     import signup as signup
-
-# ##############  login window  ############
-# def nav_login():
-#     root.destroy()
-#     import login as login
-
-#     '''root.withdraw()
-    
-#     log_w = tk.Toplevel(root)
-#     log_w.geometry("720x560")
-#     log_w.resizable(False, False)
-    
-#     my_font = "Courier new"
-#     frm = tk.Frame(log_w, width=850, height=660, bg="white")
-#     frm.place(x=0, y=0)
-
-#     lbl_head = tk.Label(frm, text="Sign in", bg="white", fg="orange", font=(my_font, 28, "bold"))
-#     lbl_head.place(x=170, y=80)
-
-
-#     def on_enter(e):
-#         user.delete(0, "end")
-
-#     def on_leave(e):
-#         name = user.get()
-#         if name == '':
-#             user.insert(0, "Username")
-
-#     # username label
-#     user = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(my_font, 18))
-#     user.place(x=170, y=170)
-#     user.insert(0, "Username")
-#     user.bind('<FocusIn>', on_enter)
-#     user.bind('<FocusOut>', on_leave)
-
-#     tk.Frame(frm, width=350, height=2, bg="black").place(x=169, y=203)
-
-#     def on_enter(e):
-#         psw.delete(0, "end")
-
-#     def on_leave(e):
-#         name = psw.get()
-#         if name == '':
-#             psw.insert(0, "Password")
-
-#     # password label
-#     psw = tk.Entry(frm, width=32, fg="black", border=0, bg="white", font=(my_font, 18))
-#     psw.place(x=170, y=270)
-#     psw.insert(0, "Password")
-#     psw.bind('<FocusIn>', on_enter)
-#     psw.bind('<FocusOut>', on_leave)
-
-#     tk.Frame(frm, width=350, height=2, bg="black").place(x=169, y=303)
-
-#     btn_log = tk.Button(frm, text="SIGN IN", width=18, bg="orange", cursor='hand2', fg="white", font=(my_font, 16, "bold"),relief="flat", border=0)
-#     btn_log.place(x=200, y=350)
-
-#     # sign up or forgot pass
-#     lbl_signup = tk.Label(frm, text="Don't have an account?", bg="white", fg="black", font=(my_font, 12))
-#     lbl_signup.place(x=165, y=440)
-#     btn_signup = tk.Button(frm, text="Sign up", border=0, cursor="hand2", font=(my_font, 12, "italic"), relief="flat", fg="#dd4b3f", bg="white")
-#     btn_signup.place(x=390, y=439)
-
-
-#     log_w.deiconify()'''
-
-# #########  Root Contd  ###############
-# def animate_gif():
-#     global frame_index
-
-#     frame = gif_frames[frame_index]
-#     disp_frame = ImageTk.PhotoImage(frame)
-#     lbl_icon.configure(image=disp_frame)
-#     lbl_icon.image = disp_frame
-
-#     frame_index = (frame_index + 1) % len(gif_frames)
-#     root.after(100, animate_gif)
-
-# # Load the animated GIF frames
-# gif = Image.open("icon_img/eye.gif")
-# gif_frames = []
-# try:
-#     while True:
-#         frame = gif.copy()
-#         frame.thumbnail((250, 250))
-#         gif_frames.append(frame)
-#         # Seek next frame
-#         gif.seek(len(gif_frames))
-# except EOFError:
-#     pass
-
-# frame_index = 0
-
-# lbl_title = tk.Label(root, text="CRIMINAL FACE RECOGNITION SYSTEM", font=("Courier new", 24, 'bold'), bg=title_color)
-# lbl_title.pack(pady=20, ipadx=5, ipady=5)
-
-# # #canvas 
-# # canvas = tk.Canvas(root, bg="white")
-# # canvas.pack(fill='both', expand=True, ipadx=40, ipady=0)
-
-# #frame 1
-# frm1 = ttk.Frame(root, style='TRoundedFrame.TFrame')
-# frm1.pack()
-
-# lbl_icon = tk.Label(frm1, bg=my_color)
-# lbl_icon.pack()
-
-# lbl_details = tk.Label(frm1, text="Detects human faces through live footage and recognize them.\nBetter than other biometric scanners which require very close physical presence.\nLearn more about us below.",
-#                        font=("Verdana", 16), bg=my_color)
-# lbl_details.pack(padx=5, ipadx=30, ipady=30)
-
-# #frame 2
-# frm2 = tk.Frame(frm1)
-# frm2.pack(padx=10, pady=50)
-# frm2.configure(background=my_color)
-
-# btn_login = tk.Button(frm2, text="LOGIN", width=14, cursor='hand2', fg="white", font=("Verdana", 16), relief="flat", bg="#e13746", command=nav_login)
-# btn_login.pack(side='left', padx=(0, 20))
-
-# btn_signup = tk.Button(frm2, text="SIGN UP", width=14, cursor='hand2', fg="white", font=("Verdana", 16), relief="flat", bg="#432771", command=nav_signup)
-# btn_signup.pack(side='right', padx=(20, 0))
-
-# btn_learn_more = tk.Button(frm1, text="Learn more about us.", cursor='hand2',fg="black", border=0, font=("Verdana", 11, "italic", "underline"), relief="flat", bg=my_color)
-# btn_learn_more.pack(pady=5)
-
-# animate_gif()
-
-# root.mainloop()
-
 
 from tkinter import *
 from tkinter import messagebox, filedialog
@@ -162,7 +11,7 @@ import mysql.connector
 class FaceRecognitionApp:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1250x850+70+0")
+        self.root.geometry("1080x720+185+30")
         title_color = "#6f86b9"
         self.root.config(bg=title_color)
         self.root.title("Criminal Face Recognition System")
@@ -184,7 +33,7 @@ class FaceRecognitionApp:
         self.lbl_icon.pack()
 
         lbl_details = Label(self.root,
-                            text="Detects human faces through live footage and recognizes them.\nBetter than other biometric scanners which require very close physical presence.\nLearn more about us below.",
+                            text="Detects human faces through live footage and recognizes them.\nBetter than other biometric scanners which requires physical touch.\nFor autorized personnel only..",
                             font=("Verdana", 16), bg=my_color)
         lbl_details.pack(padx=5, ipadx=30, ipady=30)
 
@@ -203,19 +52,10 @@ class FaceRecognitionApp:
         self.load_gif_frames()
         self.animate_gif()
 
-    def signin(self):
-        # self.root.withdraw()
-        # self.signin_window = Toplevel(self.root)
-        # self.login_win = Logging(self.signin_window)   
+    def signin(self): 
         self.root.withdraw()
         self.back_window = Toplevel(self.root)
         self.back_win = Logging(self.back_window, self)
-
-
-    # def sign_reg(self):
-    #     self.root.withdraw()
-    #     self.signup_window = Toplevel(self.root)
-    #     self.signup_win = SignUp(self.signup_window)
 
     def load_gif_frames(self):
         gif = Image.open("icon_img/eye.gif")
@@ -241,14 +81,13 @@ class FaceRecognitionApp:
             self.root.after(100, self.animate_gif)
 
 
-
 ######################3##3     SIGNUP  ---------------
 
 class SignUp:
     def __init__(self, root, log_win):
         self.root = root
         self.log_win = log_win
-        self.root.geometry("1250x850+70+0")
+        self.root.geometry("1080x720+185+30")
         title_color = "#6f86b9"
         self.root.config(bg=title_color)
         self.root.title("Criminal Face Recognition System")
@@ -269,6 +108,11 @@ class SignUp:
         lbl_head = Label(frm, text="Sign up", bg=frm_color, fg=signup_color, font=(signup_font, 28, "bold"))
         lbl_head.place(x=170, y=80)    
 
+        btn_back = Button(
+            self.root, text="Back", width=8, bg="black", cursor='hand2', fg="white", font=(signup_font, 12),
+            relief="ridge", border=1, command=self.back
+        )
+        btn_back.place(x=150, y=150)  
 
 
         def on_enter(e):
@@ -322,10 +166,10 @@ class SignUp:
 
         Frame(frm, width=350, height=2, bg="black").place(x=169, y=320)
 
-        btn_signup = Button(frm, text="SIGN UP", width=18, bg=signup_color, cursor='hand2', fg=frm_color, font=(signup_font, 16, "bold"),relief="flat", border=0, command=self.signup_db)
+        # sign up btn
+        btn_signup = Button(frm, text="SIGN UP", width=18, bg=signup_color, cursor='hand2', fg="white", font=(signup_font, 16, "bold"),relief="flat", border=0, command=self.signup_db)
         btn_signup.place(x=200, y=360)
 
-        # sign up btn
         lbl_signup = Label(frm, text="Already have an account?", bg=frm_color, fg="black", font=(signup_font, 12))
         lbl_signup.place(x=160, y=440)
         btn_log = Button(frm, text="Sign in", border=0, cursor="hand2", font=(signup_font, 12, "italic bold"), relief="flat", fg="#e13746", bg=frm_color, command=self.signin)
@@ -336,6 +180,9 @@ class SignUp:
         self.root.destroy()
         self.log_win.root.deiconify()
         
+    def back(self):
+        self.root.destroy()
+        self.log_win.root.deiconify()
         # self.root.withdraw()
         # self.signin_window = Toplevel(self.root)
         # self.signin_win = Logging(self.signup_window)
@@ -395,8 +242,6 @@ class SignUp:
 
 
 
-
-
 ##########################3    LOGIN -------------
 
 
@@ -404,7 +249,7 @@ class SignUp:
 class Logging:
     def __init__(self, root, back_win):
         self.root = root
-        self.root.geometry("1250x850+70+0")
+        self.root.geometry("1080x720+185+30")
         self.back_win = back_win
         title_color = "#6f86b9"
         self.root.config(bg=title_color)
@@ -433,13 +278,10 @@ class Logging:
         def on_enter(e):
             user.delete(0, "end")
 
-
         def on_leave(e):
             name = user.get()
             if name == '':
                 user.insert(0, "Username")
-
-
         user = Entry(frm, textvariable=self.var_user, width=32, fg="black", border=0, bg=title_color, font=(login_font, 18))
         user.place(x=170, y=170)
         user.insert(0, "Username")
@@ -452,13 +294,10 @@ class Logging:
         def on_enter(e):
             psw.delete(0, "end")
 
-
         def on_leave(e):
             passw = psw.get()
             if passw == '':
                 psw.insert(0, "Password")
-
-
         psw = Entry(frm, textvariable=self.var_psw, width=32, fg="black", border=0, bg=title_color, font=(login_font, 18))
         psw.place(x=170, y=270)
         psw.insert(0, "Password")
@@ -550,8 +389,6 @@ main_color = "#6f86b9"
 main_font = "Courier new"
 
 
-
-
 #=====----------------  forget password  ------------------=#
 
 
@@ -559,7 +396,7 @@ class ForgetPass:
     def __init__(self, root, back_win):
         self.root = root
         self.root.title("Reset password")
-        self.root.geometry("1250x850+70+0")
+        self.root.geometry("1080x720+185+30")
         self.back_win = back_win
         self.root.resizable(False, False)
         self.root.config(bg=main_color)
@@ -708,64 +545,89 @@ class ForgetPass:
 
 
 
-
-main_color = "#6f86b9"
-main_font = "Courier new"
-
-
 class AfterLogin:
     def __init__(self, root):
         self.root = root
-        # self.root.geometry("1250x850+70+0")
+        # self.root.geometry("1080x720+185+30")
         root.state('zoomed')
-
         title_color = "#b2bedc"
         self.root.config(bg=title_color)
         self.root.title("Criminal Face Recognition System")
-        # self.root.resizable(False, False)
+        self.root.resizable(False, False)
 
+
+#   bg image
+        # image = Image.open("bg_img/home_bg.jpg")
+        # image = image.resize((self.root.winfo_screenwidth(), self.root.winfo_screenheight()), Image.LANCZOS)
+        # bgimg = ImageTk.PhotoImage(image)
+
+        # bg_lbl = Label(self.root, image=bgimg)
+        # bg_lbl.image = bgimg
+        # bg_lbl.pack(fill=BOTH, expand=True)
 
         menu_bar = Menu(self.root)
         self.root.config(menu=menu_bar)
 
         # Create File menu
         home_menu = Menu(menu_bar, tearoff=0)
-        home_menu.add_command(label="Register Criminal", command=self.criminal_reg)
+        home_menu.add_command(label="Register Criminal", command=lambda: (self.criminal_reg(), self.register_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="Update Criminal Details", command=self.update_criminal)
+        home_menu.add_command(label="Update Criminal Details", command=lambda: (self.update_criminal(), self.update_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="Delete Criminal Details", command=self.criminal_details)
+        home_menu.add_command(label="View and Delete Criminal Details", command=lambda: (self.criminal_details(), self.view_del_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="Exit", command=self.root.quit)
-        home_menu.add_separator()
+        home_menu.add_command(label="Logout", command=self.logout)
         menu_bar.add_cascade(label="Home", menu=home_menu)
 
 
         data_menu = Menu(menu_bar, tearoff=0)
-        data_menu.add_command(label="View Criminal Details")
+        data_menu.add_command(label="Trained Images")
         data_menu.add_separator()
         data_menu.add_command(label="View Dataset")
-        data_menu.add_separator()
         menu_bar.add_cascade(label="Datasets", menu=data_menu)
 
         cam_menu = Menu(menu_bar, tearoff=0)
         cam_menu.add_command(label="Recognize Criminals")
-        cam_menu.add_separator()
         menu_bar.add_cascade(label="Camera", menu=cam_menu)
 
         help_menu = Menu(menu_bar, tearoff=0)
-        help_menu.add_command(label="Get help", command=self.help)
+        help_menu.add_command(label="Get help", command=lambda: (self.help(), self.help_title()))
         help_menu.add_separator()
-        help_menu.add_command(label="About us", command=self.aboutus)
-        help_menu.add_separator()
+        help_menu.add_command(label="About us", command=lambda: (self.aboutus(), self.aboutus_title()))
         menu_bar.add_cascade(label="More", menu=help_menu)
 
 
 
-
-
 #-------------   functions  --------------------=============================================================================================#
+           
+           
+            #######   title updates ###########3
+    def update_title(self):
+        self.root.title("Update Criminal details")
 
+    def register_title(self):
+        self.root.title("Register New Criminals")
+    
+    def view_del_title(self):
+        self.root.title("View and Delete Criminal Details")
+
+    def help_title(self):
+        self.root.title("Get Help")
+
+    def aboutus_title(self):
+        self.root.title("About Us")
+
+    def update_title(self):
+        self.root.title("Update Criminal Details")
+
+
+    def logout(self):
+        ans = messagebox.askyesno("Logout", "Are you sure you want to logout? ")
+        if ans == True:
+            self.root.destroy()
+            root.deiconify()
+        else:
+            return
 
     def help(self):
         frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
@@ -897,8 +759,8 @@ class AfterLogin:
         frm_add = Frame(self.root, bg=add_color, width=1250, height=850)
         frm_add.place(x=135, y=0)
 
-        lbl_head = Label(frm_add, text='Register Criminals', bg=add_color, font=(add_font, 28, 'bold'))
-        lbl_head.place(x=380, y=30)
+        # lbl_head = Label(frm_add, text='Register Criminals', bg=add_color, font=(add_font, 28, 'bold'))
+        # lbl_head.place(x=380, y=30)
 
         #name label
         asterisk_label = Label(frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
@@ -1013,7 +875,7 @@ class AfterLogin:
         confirm_btn.bind("<Enter>", on_enter)
         confirm_btn.bind("<Leave>", on_leave)
 
-       
+
     def update_criminal(self):
         add_color = "#b2bedc"
         frm_add = Frame(self.root, width=1250, height=850, bg=add_color)
@@ -1089,7 +951,7 @@ class AfterLogin:
                         updated_image_data.append(file.read())
 
             if crim_data:
-                if updated_name == '' and updated_father_name == '' and updated_mother_name == '' and updated_age == '' and updated_nationality == '' and updated_gender == '' and updated_crime == '':
+                if updated_name == '' and updated_father_name == '' and updated_mother_name == '' and updated_age == '' and updated_nationality == '' and updated_gender == '' and updated_crime == '' and updated_image_data == '':
                     messagebox.showinfo('Invalid', "No changes made.")
                     return
                 
@@ -1131,20 +993,21 @@ class AfterLogin:
                 else:
                     update_vals['crime'] = crim_data[7]
 
-                if updated_image_data and updated_image_data[0]:
+                if len(updated_image_data) > 0 and updated_image_data[0]:
                     update_vals['front_img'] = updated_image_data[0]
                 else:
                     update_vals['front_img'] = crim_data[8]
 
-                if updated_image_data and updated_image_data[1]:
+                if len(updated_image_data) > 1 and updated_image_data[1]:
                     update_vals['left_img'] = updated_image_data[1]
                 else:
                     update_vals['left_img'] = crim_data[9]
 
-                if updated_image_data and updated_image_data[2]:
+                if len(updated_image_data) > 2 and updated_image_data[2]:
                     update_vals['right_img'] = updated_image_data[2]
                 else:
                     update_vals['right_img'] = crim_data[10]
+
 
                 data_update += ', '.join(f"{field} = %s" for field in update_vals.keys())
                 data_update += " WHERE id = %s"
@@ -1201,10 +1064,13 @@ class AfterLogin:
 
 
         ############  labels  #########33##########
-        lbl_head = Label(frm_add, text='ID of criminal you want to update: ', fg='red', bg=add_color, font=(main_font, 18))
-        lbl_head.place(x=360, y=30, anchor='n')
-        id_entry = Entry(frm_add, width=7, font=('Courier New', 24), bd=5)
-        id_entry.place(x=600, y=30)
+        # lbl_heading = Label(frm_add, text="Update Criminal Details", font=('Courier new', 20, 'bold'), bg="#b2bedc")
+        # lbl_heading.place(x=500, y=10)
+
+        lbl_head = Label(frm_add, text="ID:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        lbl_head.place(x=300, y=50, anchor='ne')
+        id_entry = Entry(frm_add, width=7, font=('Courier New', 20), bd=3)
+        id_entry.place(x=600, y=35, anchor='n')
 
         #name label
         text_label = Label(frm_add, text="Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
@@ -1336,11 +1202,15 @@ class AfterLogin:
                 vals = (c_id,)
 
                 try:
-                    c.execute(crim_delete, vals)
-                    conn.commit()
-                    conn.close()
+                    result = messagebox.askyesno("Warning", f"Are you sure you want to delete {crim_data[0]} id criminal?")
+                    if result == True:
+                        c.execute(crim_delete, vals)
+                        conn.commit()
+                        conn.close()
 
-                    messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.")
+                        messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.")
+                    else:
+                        return
 
                 except mysql.connector.Error as error:
                     messagebox.showerror("Database Error", str(error))
@@ -1391,31 +1261,57 @@ class AfterLogin:
             entry_id.delete(0, END)
 
 
+        def viewall_details():
+
+            conn = mysql.connector.connect(
+                host='localhost',
+                database='mydb',
+                port='3306',
+                user='root',
+                password=''
+            )
+            c = conn.cursor()
+
+            fetch_id = "select * from criminal_reg"
+            c.execute(fetch_id)
+            crim_data = c.fetchall()
+
+            if len(crim_data) != 0:
+                self.criminal_tbl.delete(*self.criminal_tbl.get_children())  # Clear existing data in the treeview
+                for row in crim_data:
+                    self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+                conn.commit()
+            else:
+                messagebox.showerror('Invalid', 'Empty database')
+                return
+
+            conn.close()
 
         
 
         frm_detail = Frame(self.root, width=1250, height=850, bg=del_color)
         frm_detail.place(x=135, y=0)
 
-        lbl_head = Label(frm_detail, text="Delete Criminal", font=(del_font, 28, 'bold'), bg=del_color)
-        lbl_head.place(x=400, y=90)
 
-        lbl_text = Label(frm_detail, text="Enter the criminal ID: ", fg="red", bg=del_color, font=(del_font, 20))
-        lbl_text.place(x=250, y=185)
+        lbl_text = Label(frm_detail, text="Enter criminal ID: ", bg=del_color, font=(del_font, 16))
+        lbl_text.place(x=70, y=60)
 
-        entry_id = Entry(frm_detail, bg="white", width=7,  font=(del_font, 28), bd=5)  
-        entry_id.place(x=620, y=175)
+        entry_id = Entry(frm_detail, bg="white", width=7,  font=(del_font, 20), bd=5)  
+        entry_id.place(x=320, y=52)
 
-        btn_del = Button(frm_detail, width=12, text="DELETE", bg='orange', font=(del_font, 18), cursor="hand2", relief='raised', command=delete_confirm)
-        btn_del.place(x=390, y=250)
+        btn_del = Button(frm_detail, width=9, text="VIEW ALL", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=viewall_details)
+        btn_del.place(x=600, y=52)
 
-        btn_view = Button(frm_detail, width=12, text="VIEW", bg='orange', font=(del_font, 18), cursor="hand2", relief='raised', command=view_details)
-        btn_view.place(x=590, y=250)
+        btn_view = Button(frm_detail, width=9, text="VIEW", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=view_details)
+        btn_view.place(x=730, y=52)
+
+        btn_view = Button(frm_detail, width=9, text="DELETE", bg='red', fg="white", font=(del_font, 16, 'bold'), cursor="hand2", relief="sunken", command=delete_confirm)
+        btn_view.place(x=1120, y=52)
     
-        frm_view = LabelFrame(frm_detail, text= "Criminal details", width=800, height=380, bg="white")
-        frm_view.place(x=240, y=320)
-        table_frm = Frame(frm_view, bg="white")
-        table_frm.place(x=0, y=0, width=780, height=360)
+        frm_view = LabelFrame(frm_detail, text= "Criminal details", font=('courier new', 12), width=1185, height=700, bg=del_color)
+        frm_view.place(x=65, y=95)
+        table_frm = Frame(frm_view, bg="black", bd=1)
+        table_frm.place(x=5, y=5, width=1170, height=660)
 
         scroll_x = ttk.Scrollbar(table_frm, orient=HORIZONTAL)
         scroll_y = ttk.Scrollbar(table_frm, orient=VERTICAL)
