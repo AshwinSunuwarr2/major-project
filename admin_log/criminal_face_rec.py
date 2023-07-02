@@ -2,7 +2,7 @@
 from tkinter import *
 from tkinter import messagebox, filedialog
 from tkinter import ttk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageEnhance
 
 import mysql.connector
 
@@ -33,7 +33,7 @@ class FaceRecognitionApp:
         self.lbl_icon.pack()
 
         lbl_details = Label(self.root,
-                            text="Detects human faces through live footage and recognizes them.\nBetter than other biometric scanners which requires physical touch.\nFor autorized personnel only..",
+                            text="Detects human faces through live footage and recognizes them.\nBetter than other biometric scanners which requires physical touch.\nFor authorized personnel only.",
                             font=("Verdana", 16), bg=my_color)
         lbl_details.pack(padx=5, ipadx=30, ipady=30)
 
@@ -223,9 +223,8 @@ class SignUp:
             conn.commit()
             conn.close()
             messagebox.showinfo('Success', "You're now registered.", parent=self.root)
-            self.root.withdraw()
-            self.signin_window = Toplevel(self.root)
-            self.signin_win = Logging(self.signin_window) 
+            self.root.destroy()
+            self.log_win.root.deiconify()
             
             return
         
@@ -517,11 +516,10 @@ class ForgetPass:
                     c.execute(insert_newpsw, vals)
                     conn.commit()
                     conn.close()
-                    messagebox.showinfo("Success", "Password reset successful.")
+                    messagebox.showinfo("Success", "Password reset successful.", parent=self.root)
 
-                    self.root.withdraw()
-                    self.signin_window = Toplevel(self.root)
-                    self.signin_win = Logging(self.signin_window) 
+                    self.root.destroy()
+                    self.back_win.root.deiconify()
 
                     
 
@@ -532,9 +530,9 @@ class ForgetPass:
             messagebox.showerror('Invalid', 'User does not exist.', parent=self.root)
 
 
-        self.var_entry_name.delete(0, END)
-        self.var_entry_newpass.delete(0, END)
-        self.var_entry_confirmpass.delete(0, END)
+            self.var_entry_name.delete(0, END)
+            self.var_entry_newpass.delete(0, END)
+            self.var_entry_confirmpass.delete(0, END)
 
     def back(self):
             self.root.withdraw()
@@ -548,22 +546,13 @@ class ForgetPass:
 class AfterLogin:
     def __init__(self, root):
         self.root = root
-        # self.root.geometry("1080x720+185+30")
+        # self.root.geometry("1250x750+70+0")
         root.state('zoomed')
         title_color = "#b2bedc"
         self.root.config(bg=title_color)
         self.root.title("Criminal Face Recognition System")
         self.root.resizable(False, False)
 
-
-#   bg image
-        # image = Image.open("bg_img/home_bg.jpg")
-        # image = image.resize((self.root.winfo_screenwidth(), self.root.winfo_screenheight()), Image.LANCZOS)
-        # bgimg = ImageTk.PhotoImage(image)
-
-        # bg_lbl = Label(self.root, image=bgimg)
-        # bg_lbl.image = bgimg
-        # bg_lbl.pack(fill=BOTH, expand=True)
 
         menu_bar = Menu(self.root)
         self.root.config(menu=menu_bar)
@@ -581,19 +570,21 @@ class AfterLogin:
 
 
         data_menu = Menu(menu_bar, tearoff=0)
-        data_menu.add_command(label="Trained Images")
+        data_menu.add_command(label="Trained Images", command=self.trained_image)
         data_menu.add_separator()
-        data_menu.add_command(label="View Dataset")
+        data_menu.add_command(label="View Dataset", command=self.view_dataset)
+
         menu_bar.add_cascade(label="Datasets", menu=data_menu)
 
         cam_menu = Menu(menu_bar, tearoff=0)
-        cam_menu.add_command(label="Recognize Criminals")
+        cam_menu.add_command(label="Recognize Criminals", command=self.recognize)
         menu_bar.add_cascade(label="Camera", menu=cam_menu)
 
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Get help", command=lambda: (self.help(), self.help_title()))
         help_menu.add_separator()
         help_menu.add_command(label="About us", command=lambda: (self.aboutus(), self.aboutus_title()))
+
         menu_bar.add_cascade(label="More", menu=help_menu)
 
 
@@ -621,8 +612,9 @@ class AfterLogin:
         self.root.title("Update Criminal Details")
 
 
+
     def logout(self):
-        ans = messagebox.askyesno("Logout", "Are you sure you want to logout? ")
+        ans = messagebox.askyesno("Logout", "Are you sure you want to logout? ", parent=self.root)
         if ans == True:
             self.root.destroy()
             root.deiconify()
@@ -1175,12 +1167,12 @@ class AfterLogin:
             c_id = entry_id.get().strip()
 
             if c_id == "":
-                messagebox.showerror('Invalid', 'Please enter ID of criminal to delete.')
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to delete.', parent=self.root)
                 return
             try:
                 c_id = int(c_id)
             except ValueError:
-                messagebox.showerror('Invalid', "Invalid ID.")
+                messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
                 return
             
             conn = mysql.connector.connect(
@@ -1202,21 +1194,21 @@ class AfterLogin:
                 vals = (c_id,)
 
                 try:
-                    result = messagebox.askyesno("Warning", f"Are you sure you want to delete {crim_data[0]} id criminal?")
+                    result = messagebox.askyesno("Warning", f"Are you sure you want to delete {crim_data[0]} id criminal?", parent=self.root)
                     if result == True:
                         c.execute(crim_delete, vals)
                         conn.commit()
                         conn.close()
 
-                        messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.")
+                        messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.", parent=self.root)
                     else:
                         return
 
                 except mysql.connector.Error as error:
-                    messagebox.showerror("Database Error", str(error))
+                    messagebox.showerror("Database Error", str(error), parent=self.root)
                     return
             else:
-                messagebox.showerror('Invalid', 'ID not found.')
+                messagebox.showerror('Invalid', 'ID not found.', parent=self.root)
                 return
             
             entry_id.delete(0, END)
@@ -1225,12 +1217,12 @@ class AfterLogin:
             c_id = entry_id.get().strip()
 
             if c_id == "":
-                messagebox.showerror('Invalid', 'Please enter ID of criminal to view.')
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to view.', parent=self.root)
                 return
             try:
                 c_id = int(c_id)
             except ValueError:
-                messagebox.showerror('Invalid', "Invalid ID.")
+                messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
                 return
 
             conn = mysql.connector.connect(
@@ -1253,7 +1245,7 @@ class AfterLogin:
                     self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
                 conn.commit()
             else:
-                messagebox.showerror('Invalid', 'ID not found.')
+                messagebox.showerror('Invalid', 'ID not found.', parent=self.root)
                 return
 
             conn.close()
@@ -1282,7 +1274,211 @@ class AfterLogin:
                     self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
                 conn.commit()
             else:
-                messagebox.showerror('Invalid', 'Empty database')
+                messagebox.showerror('Invalid', 'Empty database', parent=self.root)
+                return
+
+            conn.close()
+
+        
+
+        frm_detail = Frame(self.root, width=1250, height=850, bg=del_color)
+        frm_detail.place(x=135, y=0)
+
+
+        lbl_text = Label(frm_detail, text="Enter criminal ID: ", bg=del_color, font=(del_font, 16))
+        lbl_text.place(x=70, y=60)
+
+        entry_id = Entry(frm_detail, bg="white", width=7,  font=(del_font, 20), bd=5)  
+        entry_id.place(x=320, y=52)
+
+        btn_del = Button(frm_detail, width=9, text="VIEW ALL", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=viewall_details)
+        btn_del.place(x=600, y=52)
+
+        btn_view = Button(frm_detail, width=9, text="VIEW", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=view_details)
+        btn_view.place(x=730, y=52)
+
+        btn_view = Button(frm_detail, width=9, text="DELETE", bg='red', fg="white", font=(del_font, 16, 'bold'), cursor="hand2", relief="sunken", command=delete_confirm)
+        btn_view.place(x=1120, y=52)
+    
+        frm_view = LabelFrame(frm_detail, text= "Criminal details", font=('courier new', 12), width=1185, height=700, bg=del_color)
+        frm_view.place(x=65, y=95)
+        table_frm = Frame(frm_view, bg="black", bd=1)
+        table_frm.place(x=5, y=5, width=1170, height=660)
+
+        scroll_x = ttk.Scrollbar(table_frm, orient=HORIZONTAL)
+        scroll_y = ttk.Scrollbar(table_frm, orient=VERTICAL)
+        
+        self.criminal_tbl = ttk.Treeview(table_frm, column=("id", "name", "father_name", "mother_name", "age", "gender", "nationality", "crime"), xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
+
+        scroll_x.pack(side=BOTTOM, fill=X)
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_x.config(command=self.criminal_tbl.xview)
+        scroll_y.config(command=self.criminal_tbl.yview)
+
+
+        self.criminal_tbl.heading("id", text="ID")
+        self.criminal_tbl.heading("name", text="Name")
+        self.criminal_tbl.heading("father_name", text="Father's Name")
+        self.criminal_tbl.heading("mother_name", text="Mother's Name")
+        self.criminal_tbl.heading("age", text="Age")
+        self.criminal_tbl.heading("gender", text="Gender")
+        self.criminal_tbl.heading("nationality", text="Nation")
+        self.criminal_tbl.heading("crime", text="Crime Committed")
+        self.criminal_tbl["show"] = "headings"
+
+        
+        self.criminal_tbl.column("id", width=60)
+        self.criminal_tbl.column("name", width=180)
+        self.criminal_tbl.column("father_name", width=180)
+        self.criminal_tbl.column("mother_name", width=180)
+        self.criminal_tbl.column("age", width=60)
+        self.criminal_tbl.column("gender", width=100)
+        self.criminal_tbl.column("nationality", width=140)
+        self.criminal_tbl.column("crime", width=300)
+
+        self.criminal_tbl.pack(fill=BOTH, expand=1)
+
+        
+    def trained_image(self):
+        frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
+        frm1.place(x=135, y=0)
+        lbl_text = Label(frm1, bg=main_color, text="Trained Images frame here.",
+                                font=(main_font, 18))
+        lbl_text.place(x=30, y=60)
+
+
+    def view_dataset(self):
+        frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
+        frm1.place(x=135, y=0)
+        lbl_text = Label(frm1, bg=main_color, text="Dataset labels frame here.",
+                                font=(main_font, 18))
+        lbl_text.place(x=30, y=60)
+
+    def recognize(self):
+        frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
+        frm1.place(x=135, y=0)
+        lbl_text = Label(frm1, bg=main_color, text="openCV camera face detection here.",
+                                font=(main_font, 18))
+        lbl_text.place(x=30, y=60)
+
+
+    def criminal_details(self):
+        del_color = "#b2bedc"
+        del_font = 'courier new'
+
+
+        def delete_confirm():
+            c_id = entry_id.get().strip()
+
+            if c_id == "":
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to delete.', parent=self.root)
+                return
+            try:
+                c_id = int(c_id)
+            except ValueError:
+                messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
+                return
+            
+            conn = mysql.connector.connect(
+                host = 'localhost',
+                database = 'mydb',
+                port = '3306',
+                user = 'root',
+                password  = ''
+            )
+            c = conn.cursor()
+
+            fetch_id = "select * from criminal_reg where id = %s"
+            values = (c_id,)
+            c.execute(fetch_id, values)
+            crim_data = c.fetchone()
+
+            if crim_data:
+                crim_delete = "delete from criminal_reg where id=%s"
+                vals = (c_id,)
+
+                try:
+                    result = messagebox.askyesno("Warning", f"Are you sure you want to delete {crim_data[0]} id criminal?", parent=self.root)
+                    if result == True:
+                        c.execute(crim_delete, vals)
+                        conn.commit()
+                        conn.close()
+
+                        messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.", parent=self.root)
+                    else:
+                        return
+
+                except mysql.connector.Error as error:
+                    messagebox.showerror("Database Error", str(error), parent=self.root)
+                    return
+            else:
+                messagebox.showerror('Invalid', 'ID not found.', parent=self.root)
+                return
+            
+            entry_id.delete(0, END)
+
+        def view_details():
+            c_id = entry_id.get().strip()
+
+            if c_id == "":
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to view.', parent=self.root)
+                return
+            try:
+                c_id = int(c_id)
+            except ValueError:
+                messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
+                return
+
+            conn = mysql.connector.connect(
+                host='localhost',
+                database='mydb',
+                port='3306',
+                user='root',
+                password=''
+            )
+            c = conn.cursor()
+
+            fetch_id = "select * from criminal_reg where id = %s"
+            values = (c_id,)
+            c.execute(fetch_id, values)
+            crim_data = c.fetchall()
+
+            if len(crim_data) != 0:
+                self.criminal_tbl.delete(*self.criminal_tbl.get_children())  # Clear existing data in the treeview
+                for row in crim_data:
+                    self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+                conn.commit()
+            else:
+                messagebox.showerror('Invalid', 'ID not found.', parent=self.root)
+                return
+
+            conn.close()
+
+            entry_id.delete(0, END)
+
+
+        def viewall_details():
+
+            conn = mysql.connector.connect(
+                host='localhost',
+                database='mydb',
+                port='3306',
+                user='root',
+                password=''
+            )
+            c = conn.cursor()
+
+            fetch_id = "select * from criminal_reg"
+            c.execute(fetch_id)
+            crim_data = c.fetchall()
+
+            if len(crim_data) != 0:
+                self.criminal_tbl.delete(*self.criminal_tbl.get_children())  # Clear existing data in the treeview
+                for row in crim_data:
+                    self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+                conn.commit()
+            else:
+                messagebox.showerror('Invalid', 'Empty database', parent=self.root)
                 return
 
             conn.close()

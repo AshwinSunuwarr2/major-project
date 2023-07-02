@@ -1,8 +1,8 @@
 from tkinter import *
 from tkinter import ttk
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog, Canvas
 
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageEnhance
 import mysql.connector
 
 import io
@@ -21,15 +21,89 @@ class AfterLogin:
         self.root.title("Criminal Face Recognition System")
         self.root.resizable(False, False)
 
+        frm_home = Frame(self.root)
+        frm_home.pack(fill="both", expand=True)
 
-#   bg image
-        # image = Image.open("bg_img/home_bg.jpg")
-        # image = image.resize((self.root.winfo_screenwidth(), self.root.winfo_screenheight()), Image.LANCZOS)
-        # bgimg = ImageTk.PhotoImage(image)
+        image_path = "bg_img/background.jpg"
+        try:
+            image = Image.open(image_path)
+            enhancer = ImageEnhance.Brightness(image)
+            dark_image = enhancer.enhance(0.1)  # Adjust the value (0.5 in this example) to control the darkness
 
-        # bg_lbl = Label(self.root, image=bgimg)
-        # bg_lbl.image = bgimg
-        # bg_lbl.pack(fill=BOTH, expand=True)
+            bg_image = ImageTk.PhotoImage(dark_image)
+
+            bg_label = Label(frm_home, image=bg_image)
+            bg_label.pack(fill="none", expand=False)
+            bg_label.image = bg_image  # Keep a reference to avoid garbage collection
+
+            frm_home.bind("<Configure>", self.on_frame_configure)
+
+        except Exception as e:
+            print(f"Error loading image: {e}")
+
+
+        img = Image.open("bg_img/get_help.jpg")
+        resized = img.resize((240,215), Image.LANCZOS)
+        enhancer = ImageEnhance.Brightness(resized)
+        dark_image = enhancer.enhance(0.45)
+        self.btn_img = ImageTk.PhotoImage(dark_image)
+
+        recognize_btn = Button(frm_home, image=self.btn_img, bg="orange", relief="groove")
+        recognize_btn.place(x=900, y=290, width=240, height=220)
+
+        recognize_btn1 = Button(frm_home, text="Get Help", bg="orange", relief="groove", font=("courier new", 14, "bold"))
+        recognize_btn1.place(x=900, y=490, width=240, height=40)
+
+
+#  -----------   getting started  ---------------#
+        start_img = Image.open("bg_img/start.jpg")
+        t_resized = start_img.resize((240,215), Image.LANCZOS)
+        enhancer = ImageEnhance.Brightness(t_resized)
+        dark_image = enhancer.enhance(0.45)
+        self.btn_start_img = ImageTk.PhotoImage(dark_image)
+
+        get_start_btn = Button(frm_home, image=self.btn_start_img, bg="orange", relief="groove")
+        get_start_btn.place(x=300, y=290, width=240, height=220)
+
+        get_start_btn1 = Button(frm_home, text="Get Started", bg="orange", relief="groove", font=("courier new", 14, "bold"))
+        get_start_btn1.place(x=300, y=490, width=240, height=40)
+
+
+#  -----------   About US  ---------------#
+        about_img = Image.open("bg_img/recognize.jpg")
+        t_resized = about_img.resize((240,215), Image.LANCZOS)
+        enhancer = ImageEnhance.Brightness(t_resized)
+        dark_image = enhancer.enhance(0.45)
+        self.btn_about_img = ImageTk.PhotoImage(dark_image)
+
+        about_us_btn = Button(frm_home, image=self.btn_about_img, bg="orange", relief="groove")
+        about_us_btn.place(x=600, y=290, width=240, height=220)
+
+        about_us_btn1 = Button(frm_home, text="About Us", bg="orange", relief="groove", font=("courier new", 14, "bold"))
+        about_us_btn1.place(x=600, y=490, width=240, height=40)
+
+
+    def on_frame_configure(self, event):
+        target_width, target_height = event.width, event.height
+
+        image_path = "bg_img/background.jpg"
+        try:
+            image = Image.open(image_path)
+            resized_image = image.resize((target_width, target_height), Image.LANCZOS)
+            enhancer = ImageEnhance.Brightness(resized_image)
+            dark_image = enhancer.enhance(0.38)
+            bg_image = ImageTk.PhotoImage(dark_image)
+
+            bg_label = event.widget.winfo_children()[0]  # Get the label inside the frame
+            bg_label.configure(image=bg_image)
+            bg_label.image = bg_image  # Keep a reference to avoid garbage collection
+
+        except Exception as e:
+            print(f"Error loading or resizing image: {e}")
+
+
+
+# -------------------   menu bars -----------------------------#
 
         menu_bar = Menu(self.root)
         self.root.config(menu=menu_bar)
@@ -42,19 +116,19 @@ class AfterLogin:
         home_menu.add_separator()
         home_menu.add_command(label="View and Delete Criminal Details", command=lambda: (self.criminal_details(), self.view_del_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="LOGOUT", command=self.logout)
+        home_menu.add_command(label="Logout", command=self.logout)
         menu_bar.add_cascade(label="Home", menu=home_menu)
 
 
         data_menu = Menu(menu_bar, tearoff=0)
-        data_menu.add_command(label="Trained Images")
+        data_menu.add_command(label="Trained Images", command=self.trained_image)
         data_menu.add_separator()
-        data_menu.add_command(label="View Dataset")
+        data_menu.add_command(label="View Dataset", command=self.view_dataset)
 
         menu_bar.add_cascade(label="Datasets", menu=data_menu)
 
         cam_menu = Menu(menu_bar, tearoff=0)
-        cam_menu.add_command(label="Recognize Criminals")
+        cam_menu.add_command(label="Recognize Criminals", command=self.recognize)
         menu_bar.add_cascade(label="Camera", menu=cam_menu)
 
         help_menu = Menu(menu_bar, tearoff=0)
@@ -91,22 +165,23 @@ class AfterLogin:
 
 
     def logout(self):
-        ans = messagebox.askyesno("Logout", "Are you sure you want to logout? ")
+        ans = messagebox.askyesno("Logout", "Are you sure you want to logout? ", parent=self.root)
         if ans == True:
             self.root.destroy()
+            root.deiconify()
         else:
             return
 
     def help(self):
-        frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
-        frm1.place(x=135, y=0)
+        frm1 =Frame(self.root, bg=main_color)
+        frm1.place(x=0, y=0, relheight=1, relwidth=1)
         lbl_text = Label(frm1, bg=main_color, text="Ashwin181209@ncit.edu.np\n Irajk181216@ncit.edu.np\n Ishan181217@ncit.edu.np",
                                 font=(main_font, 18, 'bold'))
         lbl_text.place(x=50, y=60, anchor='w')
 
     def aboutus(self):
-        frm1 =Frame(self.root, width = 1250, height = 850, bg=main_color)
-        frm1.place(x=135, y=0)
+        frm1 =Frame(self.root, bg=main_color)
+        frm1.place(x=0, y=0, relheight=1, relwidth=1)
         lbl_text = Label(frm1, bg=main_color, text="Canvas and frm_add are two different widgets in the Tkinter GUI toolkit in Python,\n and they have different purposes.",
                                 font=(main_font, 18, 'bold'))
         lbl_text.place(x=30, y=60)
@@ -152,16 +227,16 @@ class AfterLogin:
             crime = crime_entry.get("1.0", END).strip()
             
             if name == '' or age == '' or gender == '' or nationality == '' or crime == '':
-                messagebox.showerror("Error", "Please fill all required * fields.")
+                messagebox.showerror("Error", "Please fill all required * fields.", parent=self.root)
                 return 
 
             try:
                 age = int(age) 
             except ValueError:
-                messagebox.showerror("Error", "Age must be valid.")
+                messagebox.showerror("Error", "Age must be valid.", parent=self.root)
                 return
             if age <= 16:
-                messagebox.showerror("Error", "Age must be above 16.")
+                messagebox.showerror("Error", "Age must be above 16.", parent=self.root)
                 return
 
             image_paths = [self.front_file.get(), self.left_file.get(), self.right_file.get()]
@@ -172,7 +247,7 @@ class AfterLogin:
                     with open(path, 'rb') as file:
                         image_data.append(file.read())
                 else:
-                    messagebox.showerror("Error", "Please select all three images.")
+                    messagebox.showerror("Error", "Please select all three images.", parent=self.root)
                     return
                 
 
@@ -197,7 +272,7 @@ class AfterLogin:
                 crim_id = c.fetchone()
                 connection.close()
 
-                messagebox.showinfo("Success", f"Criminal with ID: {crim_id[0]} is now registered.")
+                messagebox.showinfo("Success", f"Criminal with ID: {crim_id[0]} is now registered.", parent=self.root)
 
             except mysql.connector.Error as error:
                 messagebox.showerror("Database Error", str(error))
@@ -224,93 +299,95 @@ class AfterLogin:
 
 
 
-        frm_add = Frame(self.root, bg=add_color, width=1250, height=850)
-        frm_add.place(x=135, y=0)
+        frm_add = Frame(self.root, bg=add_color)
+        frm_add.place(x=0, y=0, relheight=1, relwidth=1)
 
         # lbl_head = Label(frm_add, text='Register Criminals', bg=add_color, font=(add_font, 28, 'bold'))
         # lbl_head.place(x=380, y=30)
 
+        inner_frm_add = Frame(frm_add, bg=add_color)
+        inner_frm_add.place(x=135, y=0, relheight=1, relwidth=1)
         #name label
-        asterisk_label = Label(frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
+        asterisk_label = Label(inner_frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
         asterisk_label.place(x=200, y=100, anchor='nw')
 
-        text_label = Label(frm_add, text="Name:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
+        text_label = Label(inner_frm_add, text="Name:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
         text_label.place(x=300, y=100, anchor='ne')
 
-        name_entry = Entry(frm_add, textvariable=self.var_name_entry, width=40, font=('Courier New', 16))
+        name_entry = Entry(inner_frm_add, textvariable=self.var_name_entry, width=40, font=('Courier New', 16))
         name_entry.place(x=380, y=100)
 
         #father name
-        father_label = Label(frm_add, fg='#383838', text="Father's Name:", font=('Courier New', 18, 'bold'), bg=add_color)
+        father_label = Label(inner_frm_add, fg='#383838', text="Father's Name:", font=('Courier New', 18, 'bold'), bg=add_color)
         father_label.place(x=300, y=160, anchor='ne')
-        father_entry = Entry(frm_add, textvariable=self.var_father_entry, width=40, font=('Courier New', 16))
+        father_entry = Entry(inner_frm_add, textvariable=self.var_father_entry, width=40, font=('Courier New', 16))
         father_entry.place(x=380, y=160)
 
         #mother name
-        mother_label = Label(frm_add, fg='#383838', text="Mother's Name:", font=('Courier New', 18, 'bold'), bg=add_color)
+        mother_label = Label(inner_frm_add, fg='#383838', text="Mother's Name:", font=('Courier New', 18, 'bold'), bg=add_color)
         mother_label.place(x=300, y=220, anchor='ne')
-        mother_entry = Entry(frm_add, textvariable=self.var_mother_entry, width=40, font=('Courier New', 16))
+        mother_entry = Entry(inner_frm_add, textvariable=self.var_mother_entry, width=40, font=('Courier New', 16))
         mother_entry.place(x=380, y=220)
 
         #age
-        asterisk_label = Label(frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
+        asterisk_label = Label(inner_frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
         asterisk_label.place(x=210, y=280, anchor='nw')
 
-        text_label = Label(frm_add, text="Age:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
+        text_label = Label(inner_frm_add, text="Age:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
         text_label.place(x=300, y=280, anchor='ne')
 
-        age_entry = Entry(frm_add, textvariable=self.var_age_entry, width=40, font=('Courier New', 16))
+        age_entry = Entry(inner_frm_add, textvariable=self.var_age_entry, width=40, font=('Courier New', 16))
         age_entry.place(x=380, y=280)
 
         #gender
-        asterisk_label = Label(frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
+        asterisk_label = Label(inner_frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
         asterisk_label.place(x=168, y=340, anchor='nw')
 
-        text_label = Label(frm_add, text="Gender:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
+        text_label = Label(inner_frm_add, text="Gender:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
         text_label.place(x=300, y=340, anchor='ne')
 
-        gender_entry = Entry(frm_add, textvariable=self.var_gender_entry, width=40, font=('Courier New', 16))
+        gender_entry = Entry(inner_frm_add, textvariable=self.var_gender_entry, width=40, font=('Courier New', 16))
         gender_entry.place(x=380, y=340)
 
         #nationality
-        asterisk_label = Label(frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
+        asterisk_label = Label(inner_frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
         asterisk_label.place(x=94, y=400, anchor='nw')
 
-        text_label = Label(frm_add, text="Nationality:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
+        text_label = Label(inner_frm_add, text="Nationality:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
         text_label.place(x=300, y=400, anchor='ne')
 
-        nationality_entry = Entry(frm_add,textvariable=self.var_nationality_entry, width=40, font=('Courier New', 16))
+        nationality_entry = Entry(inner_frm_add,textvariable=self.var_nationality_entry, width=40, font=('Courier New', 16))
         nationality_entry.place(x=380, y=400)
 
         #crime
-        asterisk_label = Label(frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
+        asterisk_label = Label(inner_frm_add, text="*", font=('Courier New', 18, 'bold'), fg='red', bg=add_color)
         asterisk_label.place(x=42, y=460, anchor='nw')
 
-        text_label = Label(frm_add, text="Crime Committed:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
+        text_label = Label(inner_frm_add, text="Crime Committed:", font=('Courier New', 18, 'bold'), bg=add_color, fg="#383838")
         text_label.place(x=300, y=460, anchor='ne')
 
-        crime_entry = Text(frm_add, width=40, height=1, font=('Courier New', 16))
+        crime_entry = Text(inner_frm_add, width=40, height=1, font=('Courier New', 16))
         crime_entry.place(x=380, y=460)
 
 
         #image display garna labels haru
-        front_image_label = Label(frm_add, bg=add_color)
+        front_image_label = Label(inner_frm_add, bg=add_color)
         front_image_label.place(x=240, y=505)
 
-        left_image_label = Label(frm_add, bg=add_color)
+        left_image_label = Label(inner_frm_add, bg=add_color)
         left_image_label.place(x=600, y=505)
 
-        right_image_label = Label(frm_add, bg=add_color)
+        right_image_label = Label(inner_frm_add, bg=add_color)
         right_image_label.place(x=950, y=505)
 
         # image selection 
-        browse_btn1 = Button(frm_add, cursor="hand2", text="Select Front Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(front_image_label, self.front_file))
+        browse_btn1 = Button(inner_frm_add, cursor="hand2", text="Select Front Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(front_image_label, self.front_file))
         browse_btn1.place(x=140, y=610)
 
-        browse_btn2 = Button(frm_add, cursor="hand2", text="Select Left Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(left_image_label, self.left_file))
+        browse_btn2 = Button(inner_frm_add, cursor="hand2", text="Select Left Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(left_image_label, self.left_file))
         browse_btn2.place(x=495, y=610)
 
-        browse_btn3 = Button(frm_add, cursor="hand2", text="Select Right Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(right_image_label, self.right_file))
+        browse_btn3 = Button(inner_frm_add, cursor="hand2", text="Select Right Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(right_image_label, self.right_file))
         browse_btn3.place(x=830, y=610)
             
         # Apply hover effect
@@ -334,7 +411,7 @@ class AfterLogin:
 
 
         # Confirm Button
-        confirm_btn = Button(frm_add, text="Confirm", font=('Courier New', 16, 'bold'), fg ="#383838", bg="#ffb067", command= submit)
+        confirm_btn = Button(inner_frm_add, text="Confirm", font=('Courier New', 16, 'bold'), fg ="#383838", bg="#ffb067", command= submit)
         confirm_btn.place(x=570, y=685)
 
         # Configure button styling options
@@ -346,8 +423,11 @@ class AfterLogin:
 
     def update_criminal(self):
         add_color = "#b2bedc"
-        frm_add = Frame(self.root, width=1250, height=850, bg=add_color)
-        frm_add.place(x=135, y=0)
+        frm_add = Frame(self.root, bg=add_color)
+        frm_add.place(x=0, y=0, relheight=1, relwidth=1)
+
+        inner_frm_add = Frame(frm_add, bg=add_color)
+        inner_frm_add.place(x=135, y=0, relheight=1, relwidth=1)
 
         def add_image(label, image_variable):
             f_types = [('PNG files', '*.png'), ('JPEG files', '*.jpg;*.jpeg')]
@@ -377,23 +457,23 @@ class AfterLogin:
             updated_crime = crime_entry.get("1.0", END).strip()
 
             if c_id == '':
-                messagebox.showerror('Invalid', 'You must fill the ID of a criminal.')
+                messagebox.showerror('Invalid', 'You must fill the ID of a criminal.', parent=self.root)
                 return
             
             try:
                 c_id = int(c_id)
             except ValueError:
-                messagebox.showerror('Invalid', 'ID is not valid.')
+                messagebox.showerror('Invalid', 'ID is not valid.', parent=self.root)
                 return
             
             if updated_age != '':
                 try:
                     updated_age = int(updated_age) 
                 except ValueError:
-                    messagebox.showerror("Error", "Age must be a valid number.")
+                    messagebox.showerror("Error", "Age must be a valid number.", parent=self.root)
                     return
                 if updated_age < 14:
-                    messagebox.showerror('Invalid', 'Age must be valid.')
+                    messagebox.showerror('Invalid', 'Age must be valid.', parent=self.root)
                     return
 
             conn = mysql.connector.connect(
@@ -420,7 +500,7 @@ class AfterLogin:
 
             if crim_data:
                 if updated_name == '' and updated_father_name == '' and updated_mother_name == '' and updated_age == '' and updated_nationality == '' and updated_gender == '' and updated_crime == '' and updated_image_data == '':
-                    messagebox.showinfo('Invalid', "No changes made.")
+                    messagebox.showinfo('Invalid', "No changes made.", parent=self.root)
                     return
                 
                 data_update = "UPDATE criminal_reg SET "
@@ -485,10 +565,10 @@ class AfterLogin:
                     conn.commit()
                     conn.close()
 
-                    messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been updated.")
+                    messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been updated.", parent=self.root)
 
                 except mysql.connector.Error as error:
-                    messagebox.showerror("Database Error", str(error))
+                    messagebox.showerror("Database Error", str(error), parent=self.root)
                     return
 
                 name_entry.delete(0, END)
@@ -527,80 +607,80 @@ class AfterLogin:
                 right_file.set("")
                 id_entry.delete(0, END)
                 
-                messagebox.showerror('Invalid', 'Invalid ID.')            
+                messagebox.showerror('Invalid', 'Invalid ID.', parent=self.root)            
                 return
 
 
         ############  labels  #########33##########
-        # lbl_heading = Label(frm_add, text="Update Criminal Details", font=('Courier new', 20, 'bold'), bg="#b2bedc")
+        # lbl_heading = Label(inner_frm_add, text="Update Criminal Details", font=('Courier new', 20, 'bold'), bg="#b2bedc")
         # lbl_heading.place(x=500, y=10)
 
-        lbl_head = Label(frm_add, text="ID:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        lbl_head = Label(inner_frm_add, text="ID:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
         lbl_head.place(x=300, y=50, anchor='ne')
-        id_entry = Entry(frm_add, width=7, font=('Courier New', 20), bd=3)
+        id_entry = Entry(inner_frm_add, width=7, font=('Courier New', 20), bd=3)
         id_entry.place(x=600, y=35, anchor='n')
 
         #name label
-        text_label = Label(frm_add, text="Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        text_label = Label(inner_frm_add, text="Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
         text_label.place(x=300, y=100, anchor='ne')
-        name_entry = Entry(frm_add, width=40, font=('Courier New', 16))
+        name_entry = Entry(inner_frm_add, width=40, font=('Courier New', 16))
         name_entry.place(x=380, y=100)
 
         #father name
-        father_label = Label(frm_add, fg='#383838', text="Father's Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
+        father_label = Label(inner_frm_add, fg='#383838', text="Father's Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
         father_label.place(x=300, y=160, anchor='ne')
-        father_entry = Entry(frm_add, width=40, font=('Courier New', 16))
+        father_entry = Entry(inner_frm_add, width=40, font=('Courier New', 16))
         father_entry.place(x=380, y=160)
 
         #mother name
-        mother_label = Label(frm_add, fg='#383838', text="Mother's Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
+        mother_label = Label(inner_frm_add, fg='#383838', text="Mother's Name:", font=('Courier New', 18, 'bold'), bg="#b2bedc")
         mother_label.place(x=300, y=220, anchor='ne')
-        mother_entry = Entry(frm_add, width=40, font=('Courier New', 16))
+        mother_entry = Entry(inner_frm_add, width=40, font=('Courier New', 16))
         mother_entry.place(x=380, y=220)
 
         #age
-        text_label = Label(frm_add, text="Age:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        text_label = Label(inner_frm_add, text="Age:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
         text_label.place(x=300, y=280, anchor='ne')
-        age_entry = Entry(frm_add, width=40, font=('Courier New', 16))
+        age_entry = Entry(inner_frm_add, width=40, font=('Courier New', 16))
         age_entry.place(x=380, y=280)
 
         #gender
-        text_label = Label(frm_add, text="Gender:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        text_label = Label(inner_frm_add, text="Gender:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
         text_label.place(x=300, y=340, anchor='ne')
-        gender_entry = Entry(frm_add, width=40, font=('Courier New', 16))
+        gender_entry = Entry(inner_frm_add, width=40, font=('Courier New', 16))
         gender_entry.place(x=380, y=340)
 
         #nationality
-        text_label = Label(frm_add, text="Nationality:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        text_label = Label(inner_frm_add, text="Nationality:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
         text_label.place(x=300, y=400, anchor='ne')
-        nationality_entry = Entry(frm_add, width=40, font=('Courier New', 16))
+        nationality_entry = Entry(inner_frm_add, width=40, font=('Courier New', 16))
         nationality_entry.place(x=380, y=400)
 
         #crime
-        text_label = Label(frm_add, text="Crime Committed:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
+        text_label = Label(inner_frm_add, text="Crime Committed:", font=('Courier New', 18, 'bold'), bg="#b2bedc", fg="#383838")
         text_label.place(x=300, y=460, anchor='ne')
-        crime_entry = Text(frm_add, width=40, height=1, font=('Courier New', 16))
+        crime_entry = Text(inner_frm_add, width=40, height=1, font=('Courier New', 16))
         crime_entry.place(x=380, y=460)
 
 
         #image display garna labels haru
-        front_image_label = Label(frm_add, bg=add_color)
+        front_image_label = Label(inner_frm_add, bg=add_color)
         front_image_label.place(x=240, y=505)
 
-        left_image_label = Label(frm_add, bg=add_color)
+        left_image_label = Label(inner_frm_add, bg=add_color)
         left_image_label.place(x=600, y=505)
 
-        right_image_label = Label(frm_add, bg=add_color)
+        right_image_label = Label(inner_frm_add, bg=add_color)
         right_image_label.place(x=950, y=505)
 
         # image selection 
-        browse_btn1 = Button(frm_add, cursor="hand2", text="Select Front Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(front_image_label, front_file))
+        browse_btn1 = Button(inner_frm_add, cursor="hand2", text="Select Front Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(front_image_label, front_file))
         browse_btn1.place(x=140, y=610)
 
-        browse_btn2 = Button(frm_add, cursor="hand2", text="Select Left Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(left_image_label, left_file))
+        browse_btn2 = Button(inner_frm_add, cursor="hand2", text="Select Left Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(left_image_label, left_file))
         browse_btn2.place(x=495, y=610)
 
-        browse_btn3 = Button(frm_add, cursor="hand2", text="Select Right Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(right_image_label, right_file))
+        browse_btn3 = Button(inner_frm_add, cursor="hand2", text="Select Right Face Image", font=('Courier New', 16, 'bold'), command=lambda: add_image(right_image_label, right_file))
         browse_btn3.place(x=830, y=610)
             
         # Apply hover effect
@@ -624,7 +704,7 @@ class AfterLogin:
 
 
         # Confirm Button
-        confirm_btn = Button(frm_add, text="Confirm", font=('Courier New', 16, 'bold'), fg ="#383838", bg="#ffb067", command=submit_form)
+        confirm_btn = Button(inner_frm_add, text="Confirm", font=('Courier New', 16, 'bold'), fg ="#383838", bg="#ffb067", command=submit_form)
         confirm_btn.place(x=570, y=685)
 
         # Configure button styling options
@@ -643,12 +723,12 @@ class AfterLogin:
             c_id = entry_id.get().strip()
 
             if c_id == "":
-                messagebox.showerror('Invalid', 'Please enter ID of criminal to delete.')
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to delete.', parent=self.root)
                 return
             try:
                 c_id = int(c_id)
             except ValueError:
-                messagebox.showerror('Invalid', "Invalid ID.")
+                messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
                 return
             
             conn = mysql.connector.connect(
@@ -670,21 +750,21 @@ class AfterLogin:
                 vals = (c_id,)
 
                 try:
-                    result = messagebox.askyesno("Warning", f"Are you sure you want to delete {crim_data[0]} id criminal?")
+                    result = messagebox.askyesno("Warning", f"Are you sure you want to delete {crim_data[0]} id criminal?", parent=self.root)
                     if result == True:
                         c.execute(crim_delete, vals)
                         conn.commit()
                         conn.close()
 
-                        messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.")
+                        messagebox.showinfo("Success", f"Criminal with ID: {crim_data[0]} has been deleted.", parent=self.root)
                     else:
                         return
 
                 except mysql.connector.Error as error:
-                    messagebox.showerror("Database Error", str(error))
+                    messagebox.showerror("Database Error", str(error), parent=self.root)
                     return
             else:
-                messagebox.showerror('Invalid', 'ID not found.')
+                messagebox.showerror('Invalid', 'ID not found.', parent=self.root)
                 return
             
             entry_id.delete(0, END)
@@ -693,12 +773,12 @@ class AfterLogin:
             c_id = entry_id.get().strip()
 
             if c_id == "":
-                messagebox.showerror('Invalid', 'Please enter ID of criminal to view.')
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to view.', parent=self.root)
                 return
             try:
                 c_id = int(c_id)
             except ValueError:
-                messagebox.showerror('Invalid', "Invalid ID.")
+                messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
                 return
 
             conn = mysql.connector.connect(
@@ -721,7 +801,7 @@ class AfterLogin:
                     self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
                 conn.commit()
             else:
-                messagebox.showerror('Invalid', 'ID not found.')
+                messagebox.showerror('Invalid', 'ID not found.', parent=self.root)
                 return
 
             conn.close()
@@ -750,33 +830,36 @@ class AfterLogin:
                     self.criminal_tbl.insert("", 'end', values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
                 conn.commit()
             else:
-                messagebox.showerror('Invalid', 'Empty database')
+                messagebox.showerror('Invalid', 'Empty database', parent=self.root)
                 return
 
             conn.close()
 
         
 
-        frm_detail = Frame(self.root, width=1250, height=850, bg=del_color)
-        frm_detail.place(x=135, y=0)
+        frm_detail = Frame(self.root, bg=del_color)
+        frm_detail.place(x=0, y=0, relheight=1, relwidth=1)
+
+        frm_inner_detail = Frame(frm_detail, bg=del_color)
+        frm_inner_detail.place(x=127, y=0, relheight=1, relwidth=1)
 
 
-        lbl_text = Label(frm_detail, text="Enter criminal ID: ", bg=del_color, font=(del_font, 16))
+        lbl_text = Label(frm_inner_detail, text="Enter criminal ID: ", bg=del_color, font=(del_font, 16))
         lbl_text.place(x=70, y=60)
 
-        entry_id = Entry(frm_detail, bg="white", width=7,  font=(del_font, 20), bd=5)  
+        entry_id = Entry(frm_inner_detail, bg="white", width=7,  font=(del_font, 20), bd=5)  
         entry_id.place(x=320, y=52)
 
-        btn_del = Button(frm_detail, width=9, text="VIEW ALL", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=viewall_details)
+        btn_del = Button(frm_inner_detail, width=9, text="VIEW ALL", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=viewall_details)
         btn_del.place(x=600, y=52)
 
-        btn_view = Button(frm_detail, width=9, text="VIEW", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=view_details)
+        btn_view = Button(frm_inner_detail, width=9, text="VIEW", bg='orange', fg="black", font=(del_font, 16), cursor="hand2", relief="ridge", command=view_details)
         btn_view.place(x=730, y=52)
 
-        btn_view = Button(frm_detail, width=9, text="DELETE", bg='red', fg="white", font=(del_font, 16, 'bold'), cursor="hand2", relief="sunken", command=delete_confirm)
+        btn_view = Button(frm_inner_detail, width=9, text="DELETE", bg='red', fg="white", font=(del_font, 16, 'bold'), cursor="hand2", relief="sunken", command=delete_confirm)
         btn_view.place(x=1120, y=52)
     
-        frm_view = LabelFrame(frm_detail, text= "Criminal details", font=('courier new', 12), width=1185, height=700, bg=del_color)
+        frm_view = LabelFrame(frm_inner_detail, text= "Criminal details", font=('courier new', 12), width=1185, height=700, bg=del_color)
         frm_view.place(x=65, y=95)
         table_frm = Frame(frm_view, bg="black", bd=1)
         table_frm.place(x=5, y=5, width=1170, height=660)
@@ -815,11 +898,38 @@ class AfterLogin:
         self.criminal_tbl.pack(fill=BOTH, expand=1)
 
         
+    def trained_image(self):
+        frm1 =Frame(self.root, bg=main_color)
+        frm1.place(x=0, y=0, relheight=1, relwidth=1)
+
+        frm_inner = Frame(frm1, bg=main_color)
+        frm_inner.place(x=135, y=0, relheight=1, relwidth=1)
+        lbl_text = Label(frm_inner, bg=main_color, text="Trained Images frame here.",
+                                font=(main_font, 18))
+        lbl_text.place(x=30, y=60)
 
 
+    def view_dataset(self):
+        frm1 =Frame(self.root, bg=main_color)
+        frm1.place(x=0, y=0, relheight=1, relwidth=1)
+
+        frm_inner = Frame(frm1, bg=main_color)
+        frm_inner.place(x=135, y=0, relheight=1, relwidth=1)
+        lbl_text = Label(frm_inner, bg=main_color, text="Dataset labels frame here.",
+                                font=(main_font, 18))
+        lbl_text.place(x=30, y=60)
+
+    def recognize(self):
+        frm1 =Frame(self.root, bg=main_color)
+        frm1.place(x=0, y=0, relheight=1, relwidth=1)
+
+        frm_inner = Frame(frm1, bg=main_color)
+        frm_inner.place(x=135, y=0, relheight=1, relwidth=1)
+        lbl_text = Label(frm_inner, bg=main_color, text="openCV camera face detection here.",
+                                font=(main_font, 18))
+        lbl_text.place(x=30, y=60)
 
 
-    
         
 
 

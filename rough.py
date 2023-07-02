@@ -1,31 +1,33 @@
-import tkinter as tk
+from tkinter import Frame, Tk, Label, Button, Canvas
+from PIL import Image, ImageTk, ImageFilter, ImageEnhance
 
-def exit_application():
-    root.destroy()
+class Application:
+    def __init__(self, root):
+        self.root = root
+        root.state("zoomed")
+        self.root.resizable(False, False)
+        self.root.config(bg="grey")
 
-# Create the main window
-root = tk.Tk()
+        # frm1 = Frame(self.root, bg="black")
+        # frm1.place(x=0, y=0)
 
-# Create a custom menubar frame
-menubar_frame = tk.Frame(root, relief=tk.RAISED, borderwidth=1)
-menubar_frame.pack(side=tk.TOP, fill=tk.X)
+        # img = Image.open("bg_img/transparent.png")
+        # resized = img.resize((220,215), Image.LANCZOS)
+        # enhancer = ImageEnhance.Brightness(resized)
+        # dark_image = enhancer.enhance(0.45)
+        # self.btn_img = ImageTk.PhotoImage(dark_image)
 
-# Create a custom menubar
-menubar = tk.Menu(menubar_frame)
+        # lbl = Label(self.root, text="label for transparent", highlightbackground=1)
+        
+        canvas = Canvas(root, width=400, height=200, highlightthickness=0, highlightbackground=root["bg"])
+        canvas.pack()
 
-# Add File menu
-file_menu = tk.Menu(menubar, tearoff=0)
-file_menu.add_command(label="Exit", command=exit_application)
-menubar.add_cascade(label="File", menu=file_menu)
+        label_text = "Hello, Transparent Label!"
 
-# Position the "File" menu at the right corner
-menubar_frame.update_idletasks()
-file_menu_width = file_menu.winfo_reqwidth()
-menubar_frame.config(width=file_menu_width)
-menubar_frame.pack_propagate(0)
+        label = canvas.create_text(200, 100, text=label_text, font=("Arial", 18), fill="black", anchor="center")
 
-# Set the menubar for the main window
-root.config(menu=menubar)
-
-# Run the Tkinter event loop
-root.mainloop()
+        
+if __name__=="__main__":
+    root = Tk()
+    app = Application(root)
+    root.mainloop()
