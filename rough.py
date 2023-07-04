@@ -1,33 +1,67 @@
-from tkinter import Frame, Tk, Label, Button, Canvas
-from PIL import Image, ImageTk, ImageFilter, ImageEnhance
+import tkinter as tk
+from PIL import ImageTk, Image
+import mysql.connector
+import io
 
-class Application:
-    def __init__(self, root):
-        self.root = root
-        root.state("zoomed")
-        self.root.resizable(False, False)
-        self.root.config(bg="grey")
+def crim_img():
+    c_id = entry_id.get().strip()
 
-        # frm1 = Frame(self.root, bg="black")
-        # frm1.place(x=0, y=0)
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        port="3306",
+        database="mydb"
+    )
+    c = conn.cursor()
 
-        # img = Image.open("bg_img/transparent.png")
-        # resized = img.resize((220,215), Image.LANCZOS)
-        # enhancer = ImageEnhance.Brightness(resized)
-        # dark_image = enhancer.enhance(0.45)
-        # self.btn_img = ImageTk.PhotoImage(dark_image)
+    query = "select front_img, left_img, right_img from criminal_reg where id=%s"
+    vals = (c_id,)
+    c.execute(query, vals)
+    result = c.fetchall()
+    print("image fetching")
 
-        # lbl = Label(self.root, text="label for transparent", highlightbackground=1)
-        
-        canvas = Canvas(root, width=400, height=200, highlightthickness=0, highlightbackground=root["bg"])
-        canvas.pack()
+    if result:
+        front_data = result[0][0]
+        left_data = result[0][1]
+        right_data = result[0][2]
 
-        label_text = "Hello, Transparent Label!"
+        f_img = Image.open(io.BytesIO(front_data))
+        f_photo = ImageTk.PhotoImage(f_img)
+        lbl_front.configure(image=f_photo)
+        lbl_front.image = f_photo
 
-        label = canvas.create_text(200, 100, text=label_text, font=("Arial", 18), fill="black", anchor="center")
+        l_img = Image.open(io.BytesIO(left_data))
+        l_photo = ImageTk.PhotoImage(l_img)
+        lbl_left.configure(image=l_photo)
+        lbl_left.image = l_photo
 
-        
-if __name__=="__main__":
-    root = Tk()
-    app = Application(root)
-    root.mainloop()
+        r_img = Image.open(io.BytesIO(right_data))
+        r_photo = ImageTk.PhotoImage(r_img)
+        lbl_right.configure(image=r_photo)
+        lbl_right.image = r_photo
+
+        print("..............image is displayed.............")
+    else:
+        print("------------------ error -------------")
+
+# Create the Tkinter window and labels
+window = tk.Tk()
+
+lbl_front = tk.Label(window)
+lbl_front.pack()
+
+lbl_left = tk.Label(window)
+lbl_left.pack()
+
+lbl_right = tk.Label(window)
+lbl_right.pack()
+
+entry_id = tk.Entry(window)
+entry_id.pack()
+
+button_fetch = tk.Button(window, text="Fetch Images", command=crim_img)
+button_fetch.pack()
+
+# Run the Tkinter event loop
+window.mainloop()
