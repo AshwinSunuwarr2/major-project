@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from database.db import Base, engine, SessionLocal
 from database.model import Criminals
 import sys
+import uvicorn
 
 print(sys.path)
 
@@ -116,3 +117,7 @@ def delete_criminal(c_id: int, db: Session=Depends(get_db)):
         return f"Criminal of id {c_id} has been deleted."
     except:
         raise HTTPException(status_code=404, detail="ID not found.")
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", reload=True)

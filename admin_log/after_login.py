@@ -19,7 +19,7 @@ class AfterLogin:
         title_color = "#b2bedc"
         self.root.config(bg=title_color)
         self.root.title("Criminal Face Recognition System")
-        self.root.resizable(False, False)
+        # self.root.resizable(False, False)
 
         frm_home = Frame(self.root)
         frm_home.pack(fill="both", expand=True)
@@ -28,7 +28,7 @@ class AfterLogin:
         try:
             image = Image.open(image_path)
             enhancer = ImageEnhance.Brightness(image)
-            dark_image = enhancer.enhance(0.1)  # Adjust the value (0.5 in this example) to control the darkness
+            dark_image = enhancer.enhance(0.1)  # control the darkness
 
             bg_image = ImageTk.PhotoImage(dark_image)
 
@@ -48,10 +48,10 @@ class AfterLogin:
         dark_image = enhancer.enhance(0.45)
         self.btn_img = ImageTk.PhotoImage(dark_image)
 
-        recognize_btn = Button(frm_home, image=self.btn_img, bg="orange", relief="groove")
+        recognize_btn = Button(frm_home, image=self.btn_img, bg="orange", relief="groove", command=self.help)
         recognize_btn.place(x=900, y=290, width=240, height=220)
 
-        recognize_btn1 = Button(frm_home, text="Get Help", bg="orange", relief="groove", font=("courier new", 14, "bold"))
+        recognize_btn1 = Button(frm_home, text="Get Help", bg="orange", relief="groove", font=("courier new", 14, "bold"), command=self.help)
         recognize_btn1.place(x=900, y=490, width=240, height=40)
 
 
@@ -62,10 +62,10 @@ class AfterLogin:
         dark_image = enhancer.enhance(0.45)
         self.btn_start_img = ImageTk.PhotoImage(dark_image)
 
-        get_start_btn = Button(frm_home, image=self.btn_start_img, bg="orange", relief="groove")
+        get_start_btn = Button(frm_home, image=self.btn_start_img, bg="orange", relief="groove", command=self.getting_started)
         get_start_btn.place(x=300, y=290, width=240, height=220)
 
-        get_start_btn1 = Button(frm_home, text="Get Started", bg="orange", relief="groove", font=("courier new", 14, "bold"))
+        get_start_btn1 = Button(frm_home, text="Get Started", bg="orange", relief="groove", font=("courier new", 14, "bold"), command=self.getting_started)
         get_start_btn1.place(x=300, y=490, width=240, height=40)
 
 
@@ -76,10 +76,10 @@ class AfterLogin:
         dark_image = enhancer.enhance(0.45)
         self.btn_about_img = ImageTk.PhotoImage(dark_image)
 
-        about_us_btn = Button(frm_home, image=self.btn_about_img, bg="orange", relief="groove")
+        about_us_btn = Button(frm_home, image=self.btn_about_img, bg="orange", relief="groove", command=self.aboutus)
         about_us_btn.place(x=600, y=290, width=240, height=220)
 
-        about_us_btn1 = Button(frm_home, text="About Us", bg="orange", relief="groove", font=("courier new", 14, "bold"))
+        about_us_btn1 = Button(frm_home, text="About Us", bg="orange", relief="groove", font=("courier new", 14, "bold"), command=self.aboutus)
         about_us_btn1.place(x=600, y=490, width=240, height=40)
 
 
@@ -101,7 +101,7 @@ class AfterLogin:
         except Exception as e:
             print(f"Error loading or resizing image: {e}")
 
-
+            
 
 # -------------------   menu bars -----------------------------#
 
@@ -110,14 +110,16 @@ class AfterLogin:
 
         # Create File menu
         home_menu = Menu(menu_bar, tearoff=0)
-        home_menu.add_command(label="Register Criminal", command=lambda: (self.criminal_reg(), self.register_title()))
+        home_menu.add_command(label="Home", command=self.main_home)
         home_menu.add_separator()
-        home_menu.add_command(label="Update Criminal Details", command=lambda: (self.update_criminal(), self.update_title()))
+        home_menu.add_command(label="Register", command=lambda: (self.criminal_reg(), self.register_title()))
         home_menu.add_separator()
-        home_menu.add_command(label="View and Delete Criminal Details", command=lambda: (self.criminal_details(), self.view_del_title()))
+        home_menu.add_command(label="Update", command=lambda: (self.update_criminal(), self.update_title()))
+        home_menu.add_separator()
+        home_menu.add_command(label="View and Delete", command=lambda: (self.criminal_details(), self.view_del_title()))
         home_menu.add_separator()
         home_menu.add_command(label="Logout", command=self.logout)
-        menu_bar.add_cascade(label="Home", menu=home_menu)
+        menu_bar.add_cascade(label="Criminal Details", menu=home_menu)
 
 
         data_menu = Menu(menu_bar, tearoff=0)
@@ -162,6 +164,68 @@ class AfterLogin:
     def update_title(self):
         self.root.title("Update Criminal Details")
 
+    # ----------------------- home page ----------#
+    def main_home(self):
+        frm_home = Frame(self.root, bg="red")
+        frm_home.place(x=0, y=0, relheight=1, relwidth=1)
+
+        image_path = "bg_img/background.jpg"
+        try:
+            image = Image.open(image_path)
+            enhancer = ImageEnhance.Brightness(image)
+            dark_image = enhancer.enhance(0.1)  # Adjust the value (0.5 in this example) to control the darkness
+
+            bg_image = ImageTk.PhotoImage(dark_image)
+
+            bg_label = Label(frm_home, image=bg_image)
+            bg_label.place(x=0, y=0, relheight=1, relwidth=1)
+            bg_label.image = bg_image  # Keep a reference to avoid garbage collection
+
+            frm_home.bind("<Configure>", self.on_frame_configure)
+
+        except Exception as e:
+            print(f"Error loading image: {e}")
+
+        # ------------ get help ------#
+        img = Image.open("bg_img/get_help.jpg")
+        resized = img.resize((240,215), Image.LANCZOS)
+        enhancer = ImageEnhance.Brightness(resized)
+        dark_image = enhancer.enhance(0.45)
+        self.btn_img = ImageTk.PhotoImage(dark_image)
+
+        help_btn = Button(frm_home, image=self.btn_img, bg="orange", relief="groove", command=self.help)
+        help_btn.place(x=900, y=290, width=240, height=220)
+
+        help_btn1 = Button(frm_home, text="Get Help", bg="orange", relief="groove", font=("courier new", 14, "bold"), command=self.help)
+        help_btn1.place(x=900, y=490, width=240, height=40)
+
+#  -----------   getting started  ---------------#
+        start_img = Image.open("bg_img/start.jpg")
+        t_resized = start_img.resize((240,215), Image.LANCZOS)
+        enhancer = ImageEnhance.Brightness(t_resized)
+        dark_image = enhancer.enhance(0.45)
+        self.btn_start_img = ImageTk.PhotoImage(dark_image)
+
+        get_start_btn = Button(frm_home, image=self.btn_start_img, bg="orange", relief="groove", command=self.getting_started)
+        get_start_btn.place(x=300, y=290, width=240, height=220)
+
+        get_start_btn1 = Button(frm_home, text="Get Started", bg="orange", relief="groove", font=("courier new", 14, "bold"), command=self.getting_started)
+        get_start_btn1.place(x=300, y=490, width=240, height=40)
+
+
+#  -----------   About US  ---------------#
+        about_img = Image.open("bg_img/recognize.jpg")
+        t_resized = about_img.resize((240,215), Image.LANCZOS)
+        enhancer = ImageEnhance.Brightness(t_resized)
+        dark_image = enhancer.enhance(0.45)
+        self.btn_about_img = ImageTk.PhotoImage(dark_image)
+
+        about_us_btn = Button(frm_home, image=self.btn_about_img, bg="orange", relief="groove", command=self.aboutus)
+        about_us_btn.place(x=600, y=290, width=240, height=220)
+
+        about_us_btn1 = Button(frm_home, text="About Us", bg="orange", relief="groove", font=("courier new", 14, "bold"), command=self.aboutus)
+        about_us_btn1.place(x=600, y=490, width=240, height=40)
+        
 
 
     def logout(self):
@@ -175,16 +239,75 @@ class AfterLogin:
     def help(self):
         frm1 =Frame(self.root, bg=main_color)
         frm1.place(x=0, y=0, relheight=1, relwidth=1)
-        lbl_text = Label(frm1, bg=main_color, text="Ashwin181209@ncit.edu.np\n Irajk181216@ncit.edu.np\n Ishan181217@ncit.edu.np",
-                                font=(main_font, 18, 'bold'))
-        lbl_text.place(x=50, y=60, anchor='w')
+
+        image_path = "bg_img/background.jpg"
+        try:
+            image = Image.open(image_path)
+            enhancer = ImageEnhance.Brightness(image)
+            dark_image = enhancer.enhance(0.1)  # Adjust the value (0.5 in this example) to control the darkness
+
+            bg_image = ImageTk.PhotoImage(dark_image)
+
+            bg_label = Label(frm1, text="Criminal Face Recognition System", font=("courier new", 24, "bold"), fg="white", image=bg_image, compound="center")
+            bg_label.place(x=0, y=0, relheight=1, relwidth=1)
+
+
+            frm1.bind("<Configure>", self.on_frame_configure)
+
+        except Exception as e:
+            print(f"Error loading image: {e}")
+
+
+        # lbl_text = Label(frm1, bg=main_color, text="Ashwin181209@ncit.edu.np\n Irajk181216@ncit.edu.np\n Ishan181217@ncit.edu.np",
+        #                         font=(main_font, 18, 'bold'))
+        # lbl_text.place(x=50, y=60, anchor='w')
+
+        # ===============  frames for devs details  ==================#
+        frm_ashwin = Frame(frm1, bg="white")
+        frm_ashwin.place(x=950, y=200, height=350, width=350, anchor="nw")
+
 
     def aboutus(self):
         frm1 =Frame(self.root, bg=main_color)
         frm1.place(x=0, y=0, relheight=1, relwidth=1)
-        lbl_text = Label(frm1, bg=main_color, text="Canvas and frm_add are two different widgets in the Tkinter GUI toolkit in Python,\n and they have different purposes.",
-                                font=(main_font, 18, 'bold'))
-        lbl_text.place(x=30, y=60)
+
+        image_path = "bg_img/background.jpg"
+        try:
+            image = Image.open(image_path)
+            enhancer = ImageEnhance.Brightness(image)
+            dark_image = enhancer.enhance(0.1)  # Adjust the value (0.5 in this example) to control the darkness
+
+            bg_image = ImageTk.PhotoImage(dark_image)
+
+            bg_label = Label(frm1, text="Criminal Face Recognition System", font=("courier new", 24, "bold"), fg="white", image=bg_image, compound="center")
+            bg_label.place(x=0, y=0, relheight=1, relwidth=1)
+
+
+            frm1.bind("<Configure>", self.on_frame_configure)
+
+        except Exception as e:
+            print(f"Error loading image: {e}")
+
+    def getting_started(self):
+        frm1 =Frame(self.root, bg=main_color)
+        frm1.place(x=0, y=0, relheight=1, relwidth=1)
+
+        image_path = "bg_img/background.jpg"
+        try:
+            image = Image.open(image_path)
+            enhancer = ImageEnhance.Brightness(image)
+            dark_image = enhancer.enhance(0.1)  # Adjust the value (0.5 in this example) to control the darkness
+
+            bg_image = ImageTk.PhotoImage(dark_image)
+
+            bg_label = Label(frm1, text="Criminal Face Recognition System", font=("courier new", 24, "bold"), fg="white", image=bg_image, compound="center")
+            bg_label.place(x=0, y=0, relheight=1, relwidth=1)
+
+
+            frm1.bind("<Configure>", self.on_frame_configure)
+
+        except Exception as e:
+            print(f"Error loading image: {e}")
         
 
     def criminal_reg(self):
@@ -910,7 +1033,7 @@ class AfterLogin:
             lbl_left.image = None
             lbl_front.image = None
             entry_id.delete(0, END)
-            
+
             conn = mysql.connector.connect(
                 host='localhost',
                 database='mydb',
