@@ -333,7 +333,7 @@ class AfterLogin:
                 
                 if file_path:
                     img = Image.open(file_path)
-                    img.thumbnail((200, 200))  # Resize the image for preview
+                    img.thumbnail((105, 95))  # Resize the image for preview
                     photo = ImageTk.PhotoImage(img)
                     label.configure(image=photo)
                     label.image = photo  # Store a reference to the image
@@ -418,10 +418,6 @@ class AfterLogin:
             self.right_file.set("")
 
 
-
-
-
-
         frm_add = Frame(self.root, bg=add_color)
         frm_add.place(x=0, y=0, relheight=1, relwidth=1)
 
@@ -494,13 +490,13 @@ class AfterLogin:
 
 
         #image display garna labels haru
-        front_image_label = Label(inner_frm_add, bg=add_color)
+        front_image_label = Label(inner_frm_add, bg=main_color, height=95, width=105)
         front_image_label.place(x=240, y=505)
 
-        left_image_label = Label(inner_frm_add, bg=add_color)
+        left_image_label = Label(inner_frm_add, bg=add_color, height=95, width=105)
         left_image_label.place(x=600, y=505)
 
-        right_image_label = Label(inner_frm_add, bg=add_color)
+        right_image_label = Label(inner_frm_add, bg=add_color, height=95, width=105)
         right_image_label.place(x=950, y=505)
 
         # image selection 
@@ -615,16 +611,19 @@ class AfterLogin:
                 right_data = result[0][9]
 
                 f_img = Image.open(io.BytesIO(front_data))
+                f_img.thumbnail((105,95))
                 f_photo = ImageTk.PhotoImage(f_img)
                 front_image_label.configure(image=f_photo)
                 front_image_label.image = f_photo
 
                 l_img = Image.open(io.BytesIO(left_data))
+                l_img.thumbnail((105,95))
                 l_photo = ImageTk.PhotoImage(l_img)
                 left_image_label.configure(image=l_photo)
                 left_image_label.image = l_photo
 
                 r_img = Image.open(io.BytesIO(right_data))
+                r_img.thumbnail((105,95))
                 r_photo = ImageTk.PhotoImage(r_img)
                 right_image_label.configure(image=r_photo)
                 right_image_label.image = r_photo
@@ -637,7 +636,7 @@ class AfterLogin:
             
             if file_path:
                 img = Image.open(file_path)
-                img.thumbnail((200, 200))  # Resize the image for preview
+                img.thumbnail((105, 100))  # Resize the image for preview
                 photo = ImageTk.PhotoImage(img)
                 label.configure(image=photo)
                 label.image = photo  # Store a reference to the image
@@ -877,13 +876,13 @@ class AfterLogin:
 
 
         #image display garna labels haru
-        front_image_label = Label(inner_frm_add, bg=add_color)
+        front_image_label = Label(inner_frm_add, bg=main_color, height=95, width=105)
         front_image_label.place(x=240, y=505)
 
-        left_image_label = Label(inner_frm_add, bg=add_color)
+        left_image_label = Label(inner_frm_add, bg=add_color, height=95, width=105)
         left_image_label.place(x=600, y=505)
 
-        right_image_label = Label(inner_frm_add, bg=add_color)
+        right_image_label = Label(inner_frm_add, bg=add_color, height=95, width=105)
         right_image_label.place(x=950, y=505)
 
         # image selection 
