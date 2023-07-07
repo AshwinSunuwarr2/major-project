@@ -507,6 +507,7 @@ class AfterLogin:
             #     messagebox.showerror("Invalid", "ID no found.")
             #     id_entry.delete(0, END)
             #     return
+
             add_color = "#010203"
             frm_add = Frame(self.root, bg=add_color)
             frm_add.place(x=0, y=0, relheight=1, relwidth=1)
@@ -771,17 +772,6 @@ class AfterLogin:
             right_image_label = Label(inner_frm_add, bg=add_color, height=95, width=105)
             right_image_label.place(x=950, y=505)
 
-            # name_entry.delete(0, END)
-            # father_entry.delete(0, END)
-            # mother_entry.delete(0, END)
-            # age_entry.delete(0, END)
-            # gender_entry.delete(0, END)
-            # nationality_entry.delete(0, END)
-            # crime_entry.delete("1.0", END)
-            # front_image_label.image = None  
-            # left_image_label.image = None  
-            # right_image_label.image = None 
-
             query = "select name, father_name, mother_name, age, gender, nationality, crime, front_img, left_img, right_img from criminal_reg where id=%s"
             vals = (criminal_id,)
             c.execute(query, vals)
@@ -864,7 +854,7 @@ class AfterLogin:
             #     self.view_criminal.deiconify()
 
 
-    def update_criminal(self, criminal_id):
+    """def update_criminal(self, criminal_id):
         add_color = "#010203"
         frm_add = Frame(self.root, bg=add_color)
         frm_add.place(x=0, y=0, relheight=1, relwidth=1)
@@ -1177,7 +1167,7 @@ class AfterLogin:
         confirm_btn.config(relief=RAISED, bd=3, width=14)
 
         confirm_btn.bind("<Enter>", on_enter)
-        confirm_btn.bind("<Leave>", on_leave)    
+        confirm_btn.bind("<Leave>", on_leave) """   
 
 
     def criminal_details(self):
@@ -1424,20 +1414,227 @@ class AfterLogin:
 
         self.criminal_tbl.pack(fill=BOTH, expand=1)
 
+
+    def delete_confirm(self, criminal_id):
+
+            # if c_id == "":
+            #     messagebox.showerror('Invalid', 'Please enter ID of criminal to delete.', parent=self.root)
+            #     return
+            # try:
+            #     c_id = int(c_id)
+            # except ValueError:
+            #     messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
+            #     return
+            
+            conn = mysql.connector.connect(
+                host = 'localhost',
+                database = 'mydb',
+                port = '3306',
+                user = 'root',
+                password  = ''
+            )
+            c = conn.cursor()
+
+            # fetch_id = "select * from criminal_reg where id = %s"
+            # values = (c_id,)
+            # c.execute(fetch_id, values)
+            # crim_data = c.fetchone()
+
+            crim_delete = "delete from criminal_reg where id=%s"
+            vals = (criminal_id,)
+
+            try:
+                result = messagebox.askyesno("Warning", f"Are you sure you want to delete this criminal?", parent=self.root)
+                if result == True:
+                    c.execute(crim_delete, vals)
+                    conn.commit()
+                    conn.close()
+
+                    messagebox.showinfo("Success", f"Criminal deleted successfully.", parent=self.root)
+                        # lbl_right.image = None
+                        # lbl_left.image = None
+                        # lbl_front.image = None
+                else:
+                    return
+
+            except mysql.connector.Error as error:
+                messagebox.showerror("Database Error", str(error), parent=self.root)
+                return
+            # else:
+            #     messagebox.showerror('Invalid', 'ID not found.', parent=self.root)
+            #     return
+
+    
+
     def view_criminal(self):
+        entry_color = "white"
+        font_color = "red"
+
         frm_top = Frame(self.root, bg="#141414")
         frm_top.place(x=0, y=2, relwidth=1, height=50)
 
         lbl_head = Label(frm_top, text="Criminal Details", font=("Arial", 20, "bold"), fg="white", bg="#141414")
         lbl_head.place(relx=0.4, y=6)
 
-        view_id_btn = Button(frm_top, text="Search", width=8, font=('Courier New', 12), fg ="black", bg="#ffb067")
-        view_id_btn.place(x=1370, y=8)
+        view_all_btn = Button(frm_top, text="View All", cursor="hand2", width=8, font=('Courier New', 12), fg ="black", bg="violet", command=self.view_criminal)
+        view_all_btn.place(x=310, y=8)
 
         lbl_head = Label(frm_top, text="ID:", font=('Courier New', 16, 'bold'), fg="white", bg="grey")
-        lbl_head.place(x=1200, y=8, anchor='ne')
-        id_entry = Entry(frm_top, width=14, font=('Courier New', 12), bd=1)
-        id_entry.place(x=1205, y=10)
+        lbl_head.place(x=1250, y=8, anchor='ne')
+        top_id = Entry(frm_top, width=14, font=('Courier New', 12), bd=1)
+        top_id.place(x=1255, y=10)
+
+
+        def search_criminal():
+            criminal_id = top_id.get().strip()
+
+            if criminal_id == "":
+                messagebox.showerror('Invalid', 'Please enter ID of criminal to view.', parent=self.root)
+                return
+            try:
+                criminal_id = int(criminal_id)
+            except ValueError:
+                messagebox.showerror('Invalid', "Invalid ID.", parent=self.root)
+                return
+
+            conn = mysql.connector.connect(
+                host='localhost',
+                database='mydb',
+                port='3306',
+                user='root',
+                password=''
+            )
+            c = conn.cursor()
+
+            fetch_id = "select * from criminal_reg where id = %s"
+            values = (criminal_id,)
+            c.execute(fetch_id, values)
+            crim_data = c.fetchall()
+
+            if not crim_data:
+                messagebox.showerror("Invalid", "Id not found.")
+                return
+
+            # frame = Frame(self.root)
+            # frame.place(x=0, y=0, relheight=1, relwidth=1)
+            
+            # frm_top = Frame(self.root, bg="#141414")
+            # frm_top.place(x=0, y=2, relwidth=1, height=50)
+
+            # lbl_head = Label(frm_top, text="Criminal Details", font=("Arial", 20, "bold"), fg="white", bg="#141414")
+            # lbl_head.place(relx=0.4, y=6)
+
+            # view_all_btn = Button(frm_top, text="View All", width=8, font=('Courier New', 12), fg ="black", bg="violet", command=self.view_criminal)
+            # view_all_btn.place(x=310, y=8)
+
+            # lbl_head = Label(frm_top, text="ID:", font=('Courier New', 16, 'bold'), fg="white", bg="grey")
+            # lbl_head.place(x=1250, y=8, anchor='ne')
+            # id_search = Entry(frm_top, width=14, font=('Courier New', 12), bd=1)
+            # id_search.place(x=1255, y=10)
+
+            # view_id_btn = Button(frm_top, text="Search", width=8, font=('Courier New', 12), fg ="black", bg="#ffb067", command=search_criminal)
+            # view_id_btn.place(x=1410, y=8)
+
+            # =========   criminal view with id ============ #
+            frm_one_crim = Frame(self.root, bg="#292929")
+            frm_one_crim.place(x=0, y=53, relwidth=1, relheight=1)
+
+            frm_item = Frame(frm_one_crim, bg="white", height=350, width=900, bd=1)
+            frm_item.pack(side="top", padx=310, pady=20)
+            # ------------ left labels ---------- #
+            lbl_name = Label(frm_item, bg="white", text="Name: ", font=(main_font, 12))
+            lbl_name.place(x=178, y=5, anchor="ne")
+            entry_name = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color,width=35, relief="flat")
+            entry_name.insert(0, crim_data[0][1])
+            entry_name.place(x=178, y=5)
+
+            lbl_name = Label(frm_item, bg="white", text="Father's Name: ", font=(main_font, 12))
+            lbl_name.place(x=178, y=35, anchor="ne")
+            father_entry = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color,width=35, relief="flat")
+            father_entry.insert(0, crim_data[0][2])
+            father_entry.place(x=178, y=35)
+            
+            lbl_name = Label(frm_item, bg="white", text="Mother's Name: ", font=(main_font, 12))
+            lbl_name.place(x=178, y=67, anchor="ne")
+            mother_entry = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color,width=35, relief="flat")
+            mother_entry.insert(0, crim_data[0][3])
+            mother_entry.place(x=178, y=67)
+
+            lbl_name = Label(frm_item, bg="white", text="Crime Committed: ", font=(main_font, 12))
+            lbl_name.place(x=178, y=105, anchor="ne")
+            crime_entry = Text(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color, height=3, width=35, relief="flat")
+            crime_entry.insert("1.0", crim_data[0][7])
+            crime_entry.place(x=178, y=105)
+
+            #   --------- right labels ---------#
+            lbl_name = Label(frm_item, bg="white", text="ID: ", font=(main_font, 12))
+            lbl_name.place(x=680, y=5, anchor="ne")
+            id_entry = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color,width=21, relief="flat")
+            id_entry.insert(0, crim_data[0][0])
+            id_entry.place(x=675, y=5)
+
+            lbl_name = Label(frm_item, bg="white", text="Age: ", font=(main_font, 12))
+            lbl_name.place(x=680, y=35, anchor="ne")
+            age_entry = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color,width=21, relief="flat")
+            age_entry.insert(0, crim_data[0][4])
+            age_entry.place(x=675, y=35)
+
+            lbl_name = Label(frm_item, bg="white", text="Gender: ", font=(main_font, 12))
+            lbl_name.place(x=680, y=67, anchor="ne")
+            gender_entry = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color,width=21, relief="flat")
+            gender_entry.insert(0, crim_data[0][5])
+            gender_entry.place(x=675, y=67)
+
+            lbl_name = Label(frm_item, bg="white", text="Nationality: ", font=(main_font, 12))
+            lbl_name.place(x=680, y=100, anchor="ne")
+            nationality_entry = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color, width=21, relief="flat")
+            nationality_entry.insert(0, crim_data[0][6])
+            nationality_entry.place(x=675, y=100)
+
+            # --------- img for single criminals -----------#
+            lbl_left = Label(frm_item, height=95, width=105)
+            lbl_left.place(x=250, y=210)
+            lbl_front = Label(frm_item, height=115, width=110)
+            lbl_front.place(x=410, y=200)
+            lbl_right = Label(frm_item, height=95, width=105)
+            lbl_right.place(x=570, y=210)
+
+
+            # ------ images ---------#
+            front_data = crim_data[0][8]
+            left_data = crim_data[0][9]
+            right_data = crim_data[0][10]
+
+            f_img = Image.open(io.BytesIO(front_data))
+            f_img.thumbnail((110, 115))  # Resize the image to fit label size
+            f_photo = ImageTk.PhotoImage(f_img)
+            lbl_front.configure(image=f_photo)
+            lbl_front.image = f_photo
+
+            l_img = Image.open(io.BytesIO(left_data))
+            l_img.thumbnail((105, 95))  # Resize the image to fit label size
+            l_photo = ImageTk.PhotoImage(l_img)
+            lbl_left.configure(image=l_photo)
+            lbl_left.image = l_photo
+
+            r_img = Image.open(io.BytesIO(right_data))
+            r_img.thumbnail((105, 95))  # Resize the image to fit label size
+            r_photo = ImageTk.PhotoImage(r_img)
+            lbl_right.configure(image=r_photo)
+            lbl_right.image = r_photo
+
+            btn_edit = Button(frm_item, width=9, text="EDIT", bg='#e4d00a', fg="black", font=(main_font, 14), cursor="hand2", relief="sunken", command=lambda criminal_id=row[0]: self.view_crim(criminal_id))
+            btn_edit.place(x=740, y=230)
+            btn_del = Button(frm_item, width=9, text="DELETE", bg='#e44c5c', fg="black", font=(main_font, 14), cursor="hand2", relief="sunken", command=lambda criminal_id=row[0]: (self.delete_confirm(criminal_id), self.view_criminal()))
+            btn_del.place(x=740, y=280)
+
+
+
+        
+
+
+        view_id_btn = Button(frm_top, text="Search", width=8, cursor="hand2", font=('Courier New', 12), fg ="black", bg="#ffb067", command=search_criminal)
+        view_id_btn.place(x=1410, y=8)
 
         frm = Frame(root)
         frm.place(x=0, y=50, relheight=1, relwidth=1)
@@ -1447,6 +1644,7 @@ class AfterLogin:
 
         main_frame = Frame(canvas)
         main_frame.config(bg="#292929")
+        
         conn = mysql.connector.connect(
                 host = 'localhost',
                 user = 'root',
@@ -1458,10 +1656,8 @@ class AfterLogin:
 
         insert_query = "select * from criminal_reg"
         c.execute(insert_query)
-        results = c.fetchall()
-
-        entry_color = "white"
-        font_color = "red"
+        results = c.fetchall()  
+        conn.close()      
 
         for row in results:
             # create_frame(item)
@@ -1483,7 +1679,7 @@ class AfterLogin:
             lbl_name = Label(frm_item, bg="white", text="Mother's Name: ", font=(main_font, 12))
             lbl_name.place(x=178, y=67, anchor="ne")
             mother_entry = Entry(frm_item, font=(main_font, 12), fg=font_color, bg=entry_color,width=35, relief="flat")
-            mother_entry.insert(0, row[2])
+            mother_entry.insert(0, row[3])
             mother_entry.place(x=178, y=67)
 
             lbl_name = Label(frm_item, bg="white", text="Crime Committed: ", font=(main_font, 12))
@@ -1549,9 +1745,9 @@ class AfterLogin:
             lbl_right.configure(image=r_photo)
             lbl_right.image = r_photo
 
-            btn_del = Button(frm_item, width=9, text="EDIT", bg='#e4d00a', fg="black", font=(main_font, 14), cursor="hand2", relief="sunken", command=lambda criminal_id=row[0]: (self.update_criminal(criminal_id), self.view_crim(criminal_id)))
-            btn_del.place(x=740, y=230)
-            btn_del = Button(frm_item, width=9, text="DELETE", bg='#e44c5c', fg="black", font=(main_font, 14), cursor="hand2", relief="sunken")
+            btn_edit = Button(frm_item, width=9, text="EDIT", bg='#e4d00a', fg="black", font=(main_font, 14), cursor="hand2", relief="sunken", command=lambda criminal_id=row[0]: self.view_crim(criminal_id))
+            btn_edit.place(x=740, y=230)
+            btn_del = Button(frm_item, width=9, text="DELETE", bg='#e44c5c', fg="black", font=(main_font, 14), cursor="hand2", relief="sunken", command=lambda criminal_id=row[0]: (self.delete_confirm(criminal_id), self.view_criminal()))
             btn_del.place(x=740, y=280)
 
         # put the frame to be scrolled in the canvas  ---------- group of widgets need use of canvas 
@@ -1564,6 +1760,8 @@ class AfterLogin:
                         
         canvas.pack(fill='both', expand=True, side='left')
         scroll_y.pack(fill='y', side='right')
+
+            
 
     def trained_image(self):
         frm1 =Frame(self.root, bg=main_color)
